@@ -78,14 +78,6 @@ export function Collections(props: IProps) {
   const classes = useStyles();
   const [filterCategory, setFilterCategory] = useState<string>("");
   const [revealFilterDrawer, setRevealFilterDrawer] = useState(false);
-  const [fetchedBracelets, setFetchedBracelets] = useState<IBraceletData[]>([
-    {
-      name: products.title,
-      price: products.price,
-      src: products.src,
-      category: products.category,
-    },
-  ]);
 
   const theme = useTheme();
   const matches = {
@@ -160,19 +152,6 @@ export function Collections(props: IProps) {
 
   return (
     <>
-    {
-       
-      products[0] ? console.log(
-          "Collections Products Options Quantity: ",
-          products[0].variants[0].price,
-          products[0].title,
-          products[0].images[0].src,
-          products[0].options[2].values[0].value,
-          products[0].options[2]
-        ) 
-        :
-        null
-    }
       <div onScroll={scrollEvent}>
         <motion.div
           style={props.pageStyle}

@@ -26,3 +26,11 @@ or:
 # bb
 # bb
 # bb
+
+
+## JS shopify Buy SDK Api  
+          products[0].variants[0].price,
+          products[0].title,
+          products[0].images[0].src,
+          products[0].options[2].values[0].value,
+          products[0].options[2]

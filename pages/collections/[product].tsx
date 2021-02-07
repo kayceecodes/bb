@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
-import React, { CSSProperties, useEffect, useState } from "react";
+import { useRouter, withRouter } from "next/router";
+import React, { CSSProperties, useContext, useEffect, useState } from "react";
 
 import {
   IBraceletData,
@@ -30,6 +30,7 @@ import theme from "../../src/ui/Theme";
 
 import CartSummaryModal from "../../src/ui/cartSummaryModal/CartSummaryModal";
 import { bracelets } from "../../src/data/data";
+import { ShopContext } from "../../src/components/context/ShopContext";
 
 interface IDisplayItemProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -131,7 +132,8 @@ export function convertItemName(itemName: string) {
   return namedRoute.replace(uppercase, (x: string) => x.toLowerCase());
 }
 
-function DisplayItem(props: IProps) {
+function Product(props: IProps) {
+  const { fetchProductWithHandle, product, productHandle } = useContext<any>(ShopContext)
   const classes = useStyles();
   const dispatch: Dispatch<any> = useDispatch();
   const [open, setOpen] = useState(false);
@@ -143,6 +145,7 @@ function DisplayItem(props: IProps) {
     src: "Empty Src",
   });
   const router = useRouter();
+  let handle = router.asPath.substring(13)
   const matches = {
     sm: useMediaQuery(theme.breakpoints.up("sm")),
     md: useMediaQuery(theme.breakpoints.up("md")),
@@ -158,36 +161,6 @@ function DisplayItem(props: IProps) {
     src: "Not Available",
     id: "",
   });
-
-  /**
-   *  Identifies an item by name
-   *  Uses an already imported data.
-   *  Compares it to a path from it param.
-   * @params {nameOfBracelet} string - this will take a name from asPath of router object
-   * @return {void}
-   */
-  const findItem = (path: string) => {
-    const prefix = "/collections/";
-
-    const foundItem = bracelets.find((item) => {
-      if (prefix + convertItemName(item.name) === path) {
-        console.log(
-          "Prefixes and name",
-          prefix + " " + path + " " + convertItemName(item.name)
-        );
-        setCurrentItem(item);
-        setValues({
-          name: item.name,
-          size: 0,
-          quantity: 1,
-          price: item.price,
-          src: item.src,
-          id: "",
-        })
-      }
-    });
-    console.log("Found Bracelet ", foundItem);
-  };
 
   const goBackHandle = () => {
     router.push("/collections");
@@ -237,11 +210,10 @@ function DisplayItem(props: IProps) {
   };
 
   useEffect(() => {
-    if (values.name == 'Not Available') {
-      findItem(router.asPath);
-    }
+    fetchProductWithHandle(handle)
+    console.log(router.asPath.substring(13))
     props.setValue(1);
-  });
+  }, [fetchProductWithHandle, handle]);
 
   return (
     <>
@@ -289,7 +261,7 @@ function DisplayItem(props: IProps) {
                   {/* Right Side of Cantainer - The Item's Name */}
                   <Typography variant="h3" className={classes.itemName}>
                     <div className={classes.headersUnderline}>
-                      {values.name}
+                      {product.title}
                     </div>
                   </Typography>
                 </Grid>
@@ -440,7 +412,7 @@ function DisplayItem(props: IProps) {
                         Price:{" "}
                         <span data-testid="price">
                           {/* ${(currentItem.price * values.quantity).toFixed(2)} */}
-                          ${(values.price * values.quantity).toFixed(2)}
+                  {/* ${(product.variants[0].price * values.quantity).toFixed(2)} */}
                         </span>
                       </Typography>
                     </Grid>
@@ -487,4 +459,4 @@ const mapStateToProps = (state: any) => ({
 //   }
 // }
 
-export default connect(mapStateToProps)(DisplayItem);
+export default connect(mapStateToProps)(Product);

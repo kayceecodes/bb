@@ -53,8 +53,8 @@ const useStyles = makeStyles((theme) => ({
 export function convertItemName(itemName: string) {
   /* Find spaces */
   let spaces = new RegExp("[ ]+", "g");
-  /* Then replace with empty string */
-  let namedRoute = itemName.replace(spaces, "");
+  /* Then replace with hypens in between */
+  let namedRoute = itemName.replace(spaces, "-");
 
   let uppercase = new RegExp("[A-Z]", "g");
   return namedRoute.replace(uppercase, (x: string) => x.toLowerCase());

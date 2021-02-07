@@ -15,6 +15,7 @@ interface State {
   checkout: any
   isCartOpen: boolean
   isMenuOpen: boolean
+  productHandle: string
 }
  
 export class ShopPrivder extends Component {
@@ -24,6 +25,7 @@ export class ShopPrivder extends Component {
     checkout: {},
     isCartOpen: false,
     isMenuOpen: false,
+    productHandle: '',
   };
 
   componentDidMount() {
@@ -103,6 +105,10 @@ export class ShopPrivder extends Component {
     const product = await client.product.fetchByHandle(handle);
     this.setState({ product: product });
   };
+
+  setHandle = async (productHandle: string) => {
+    this.setState({ productHandle })
+  }
 
   closeCart = () => { this.setState({isCartOpen: false})};
 
