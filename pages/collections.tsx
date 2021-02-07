@@ -76,7 +76,6 @@ export let CATEGORIES: any = {
 export function Collections(props: IProps) {
   const { fetchAllProducts, products } = useContext<any>(ShopContext);
   const classes = useStyles();
-  const [revealCaption, setRevealCaption] = useState(false); // Caption 'Filter By:' above Luxury, Team Colors, Frat&Sor
   const [filterCategory, setFilterCategory] = useState<string>("");
   const [revealFilterDrawer, setRevealFilterDrawer] = useState(false);
   const [fetchedBracelets, setFetchedBracelets] = useState<IBraceletData[]>([
@@ -216,7 +215,6 @@ export function Collections(props: IProps) {
               <FilterCardBtns
                 setFilterCategory={setFilterCategory}
                 filterCategory={filterCategory}
-                setRevealCaption={setRevealCaption}
                 jumpTo={props.jumpTo}
               />
             </Hidden>

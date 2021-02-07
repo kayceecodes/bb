@@ -11,7 +11,6 @@ import UseImgFile from "../useImgFile/UseImgFile"
 interface IProps {
   filterCategory: string
   setFilterCategory: React.Dispatch<React.SetStateAction<string>>
-  setRevealCaption: React.Dispatch<React.SetStateAction<boolean>>
   jumpTo: (jumpingTarget: string | number | Element) => void
 }
 
@@ -66,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 /** These buttons will set the filter category and the state of the filterCategory
- * @param props: {setRevealCaption, filterCategory, setFilterCategory}
+ * @param props: {filterCategory, setFilterCategory}
  * @return {filterCategory: string}
  */
 
