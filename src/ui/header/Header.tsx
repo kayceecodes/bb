@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "../../Link";
 import AppBar from "@material-ui/core/AppBar";
@@ -10,10 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import Hidden from "@material-ui/core/Hidden/Hidden";
-
+import Searchbar from "./Searchbar";
 import Headertabs from "./headertabs/Headertabs";
 import Sidedrawer from "./sidedrawer/Sidedrawer";
 
@@ -21,6 +18,7 @@ import { MouseEvent } from "../../types/aliases"; // TYPE - Events
 
 import { bracelets } from "../../data/data";
 import Typography from "@material-ui/core/Typography/Typography";
+import { convertNameToHandle } from "../../utils/Parse";
 
 interface IHideOnScrollProps {
   children?: any;
@@ -68,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   appbar: {
     zIndex: theme.zIndex.modal + 1,
     boxShadow: "none",
-    padding: '0',
+    padding: "0",
   },
   upperToolbar: {},
   homeBtn: {
@@ -88,39 +86,6 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px 2px",
     borderRadius: "4px",
     border: `0.8px solid #ffffff90`,
-  },
-  secondToolbar: {
-    height: "20px",
-    marginLeft: "auto",
-  },
-
-  popperZIndex: {
-    zIndex: 1303,
-  },
-  optionsText: {
-    // AUTO COMPLETE SELECT - OPTIONS
-    color: "rgb(85,77,64)",
-    letterSpacing: "0.5px",
-    fontSize: "0.85rem",
-    backgroundColor: "rgba(231,212,195, 0.01)",
-    fontFamily: "Raleway",
-    "&:hover": {
-      color: theme.palette.common.orange,
-      backgroundColor: "rgba(231,212,195, 0.15)",
-    },
-  },
-  toolbarGrid: {
-    borderTop: `2px solid ${theme.palette.common.dimegray}99`,
-    backgroundColor: theme.palette.common.antiqueWhite,
-    padding: "0px 0px 30px",
-  },
-  underline: {
-    "&:focused": {
-      color: "blue",
-    },
-    "&:hover": {
-      underline: "green",
-    },
   },
   root: {
     width: "100%",
@@ -142,6 +107,7 @@ export default function Header(props: any) {
   };
   const handleMenuItemClick = (e: MouseEvent, i: number) => {
     //   setAnchorEl(null);
+    e;
     setOpenMenu(false);
     props.setSelectedIndex(i);
   };
@@ -227,21 +193,10 @@ export default function Header(props: any) {
     <Sidedrawer routes={routes} value={props.value} setValue={props.setValue} />
   );
 
-  function convertToRoute(nestedRoute: string, itemName: string) {
-    // www.website.com/nestedRoute/itemName
-    itemName = nestedRoute + itemName;
-
-    let spaces = new RegExp("[ ]+", "g");
-    let namedRoute = itemName.replace(spaces, "");
-    let uppercase = new RegExp("[A-Z]", "g");
-
-    return namedRoute.replace(uppercase, (x: string) => x.toLowerCase());
-  }
-
   const handleAutoComplete = (name: string) => {
     console.log("String in Autocomplet: ", typeof name);
     if (name !== null) {
-      router.push(convertToRoute("/collections/", name));
+      router.push('/collections/' + convertNameToHandle(name));
     } else {
       router.push("/collections");
     }
@@ -273,44 +228,13 @@ export default function Header(props: any) {
                 </Link>
               </Grid>
               <Grid item xs={6}>
-                <Grid container>
-                  {matches ? sidedrawer : tabs}
-                </Grid>
+                <Grid container>{matches ? sidedrawer : tabs}</Grid>
               </Grid>
             </Grid>
           </Toolbar>
-          <Hidden smDown>
-            <Grid container classes={{ root: classes.toolbarGrid }}>
-              <Toolbar className={classes.secondToolbar}>
-                <div style={{ width: 300 }}>
-                  <Autocomplete
-                    classes={{
-                      popper: classes.popperZIndex,
-                      option: classes.optionsText,
-                      listbox: classes.optionsText,
-                    }}
-                    onChange={(event: ChangeEvent<{}>, value: any) => {
-                      handleAutoComplete(value);
-                    }}
-                    id="free-solo-demo"
-                    freeSolo
-                    options={bracelets.map((option) => option.name)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        size="small"
-                        id="outlined-size-small"
-                        label="Search Bracelets"
-                        margin="normal"
-                        color={undefined}
-                        classes={{ root: classes.underline }}
-                      />
-                    )}
-                  />
-                </div>
-              </Toolbar>
-            </Grid>
-          </Hidden>
+          <Searchbar
+            handleAutoComplete={handleAutoComplete}
+          />
         </AppBar>
       </HideOnScroll>
       <div className={classes.toolbarMargin} />

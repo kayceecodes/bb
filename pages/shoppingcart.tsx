@@ -194,7 +194,7 @@ const Shoppingcart = (props: IProps) => {
               </div>
             </Grid>
             <Grid item>
-              <Button component={Link} href={checkout.webUrl} className={classes.checkoutBtn}>
+              <Button component={Link} href={checkout.webUrl ? checkout.webUrl : '/'} className={classes.checkoutBtn}>
                 Continue To Checkout
               </Button>
             </Grid>

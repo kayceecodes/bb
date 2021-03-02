@@ -29,8 +29,8 @@ import { addToCart, addQuantityToItem } from "../../src/store/actions";
 import theme from "../../src/ui/Theme";
 
 import CartSummaryModal from "../../src/ui/cartSummaryModal/CartSummaryModal";
-import { bracelets } from "../../src/data/data";
 import { ShopContext } from "../../src/components/context/ShopContext";
+import Client from "shopify-buy";
 
 interface IDisplayItemProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -39,6 +39,7 @@ interface IDisplayItemProps {
   pageAnimations: IPageAnimations;
   motions: IMotions;
   addToCart?: (cartItems: ICartItems) => any;
+  product: any,
 }
 
 interface IGlobalState {
@@ -131,21 +132,65 @@ export function convertItemName(itemName: string) {
   let uppercase = new RegExp("[A-Z]", "g");
   return namedRoute.replace(uppercase, (x: string) => x.toLowerCase());
 }
+const client = Client.buildClient({
+  domain: "benson-bracelets.myshopify.com",
+  // storefrontAccessToken: "69542136315009d67e27c9e7ffed55f2",
+  storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2"
+});
+
+export async function getStaticProps(context) {
+  const router = useRouter();
+  const product = await client.product.fetchByHandle(router.asPath.substring(13));
+
+  if (!product) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {
+      product
+    }, // will be passed to the page component as props
+  }
+}
+
+// getStaticProps is Trying to grab one product instead of a full array
+// but getStaticPaths is taking an array of products not just one product
+export async function getStaticPaths() {
+  const [products, setProducts] = useState<any>()
+  await client.product.fetchAll().then((products) => {
+    setProducts(products)
+  })
+  
+  return {
+    paths:
+    products.map((product: any) => ({ 
+      params: {slug: product.handle}
+    })),
+    fallback: false // See the "fallback" section below
+  }
+}
+
 
 function Product(props: IProps) {
-  const { fetchProductWithHandle, product, productHandle } = useContext<any>(ShopContext)
+  const {
+    fetchProductWithHandle,
+    product,
+    products,
+    productHandle,
+    addItemToCheckout,
+  } = useContext<any>(ShopContext);
   const classes = useStyles();
   const dispatch: Dispatch<any> = useDispatch();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement>();
-  const [currentItem, setCurrentItem] = useState<IBraceletData>({
-    name: "Empty Name",
-    price: 0,
-    category: "Empty Category",
-    src: "Empty Src",
-  });
+  const [productData, setProductData] = useState<typeof product>({})
   const router = useRouter();
-  let handle = router.asPath.substring(13)
+  let handle = router.asPath.substring(13);
   const matches = {
     sm: useMediaQuery(theme.breakpoints.up("sm")),
     md: useMediaQuery(theme.breakpoints.up("md")),
@@ -154,7 +199,7 @@ function Product(props: IProps) {
   }; // If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles
   const [loading, setLoading] = React.useState(false);
   const [values, setValues] = React.useState<ICartItems>({
-    name: 'Not Available',
+    name: "Not Available",
     size: 0,
     quantity: 1,
     price: 0.0,
@@ -170,10 +215,9 @@ function Product(props: IProps) {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  /**
-   * Map through ids in CartItems then checks if it includes the called id
-   * @param newItem
-   * @returns {void}
+  /** Map through ids in CartItems then checks if it includes the called id
+   *  @param newItem
+   *  @returns {void}
    */
   const onAddToCart = (newItem: ICartItems) => {
     newItem = {
@@ -195,11 +239,11 @@ function Product(props: IProps) {
   /* Clears values in the options */
   const clearValues = () =>
     setValues({
-      name: currentItem.name,
+      name: "",
       size: 0,
       quantity: 1,
-      price: currentItem.price,
-      src: currentItem.src,
+      price: 0,
+      src: "Not Available",
       id: "",
     });
 
@@ -209,14 +253,20 @@ function Product(props: IProps) {
     setTimeout(() => setOpen(true), 500);
   };
 
-  useEffect(() => {
-    fetchProductWithHandle(handle)
-    console.log(router.asPath.substring(13))
-    props.setValue(1);
-  }, [fetchProductWithHandle, handle]);
+  // useEffect(() => {
+  // //  if(products.length < 1) {
+  // //    router.push('/collections')
+  // //  } else {
+  //  fetchProductWithHandle(router.asPath.substring(13))
+  //  setProductData(product)
+  //  console.log(handle)
+  // //  }
+  // }, [fetchProductWithHandle, product]);
 
+  // if(!productData.title) return <div>Loading ..</div>
+  if(!props.product.title) return <div>Loading ..</div>
   return (
-    <>
+    <div>
       <div style={{ position: "relative" }}>
         <motion.div
           style={{
@@ -261,7 +311,9 @@ function Product(props: IProps) {
                   {/* Right Side of Cantainer - The Item's Name */}
                   <Typography variant="h3" className={classes.itemName}>
                     <div className={classes.headersUnderline}>
-                      {product.title}
+                      {/* {product.title} */}
+                      {/* {productData.title} */}
+                      {props.product.title}
                     </div>
                   </Typography>
                 </Grid>
@@ -275,8 +327,8 @@ function Product(props: IProps) {
                 <Grid item sm={6}>
                   {/* LEFT SIDE OF ITEM - Img Of Bracelet */}
                   <img
-                    src={values.src}
-                    // src={currentItem.src}
+                    // src={product.images[0].src}
+                    src={productData.images[0].src}
                     className={classes.itemImg}
                     alt="bracelet displayed"
                   />
@@ -320,15 +372,15 @@ function Product(props: IProps) {
                           <MenuItem data-testid="menuItem" value={4.5}>
                             4.5"
                           </MenuItem>
-                          <MenuItem value={5}>5"</MenuItem>
-                          <MenuItem value={5.5}>5.5"</MenuItem>
-                          <MenuItem value={6}>6"</MenuItem>
-                          <MenuItem value={6.5}>6.5"</MenuItem>
-                          <MenuItem value={7}>7"</MenuItem>
-                          <MenuItem value={7.5}>7.5"</MenuItem>
-                          <MenuItem value={8}>8"</MenuItem>
-                          <MenuItem value={8.5}>8.5"</MenuItem>
-                          <MenuItem value={9}>9"</MenuItem>
+                          <MenuItem value={'5"'}>5"</MenuItem>
+                          <MenuItem value={'5.5"'}>5.5"</MenuItem>
+                          <MenuItem value={'6"'}>6"</MenuItem>
+                          <MenuItem value={'6.5"'}>6.5"</MenuItem>
+                          <MenuItem value={'7"'}>7"</MenuItem>
+                          <MenuItem value={'7.5"'}>7.5"</MenuItem>
+                          <MenuItem value={'8"'}>8"</MenuItem>
+                          <MenuItem value={'8.5"'}>8.5"</MenuItem>
+                          <MenuItem value={'9"'}>9"</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -384,6 +436,14 @@ function Product(props: IProps) {
                         }
                         onClick={(e: any) => {
                           onAddToCart(values);
+                          addItemToCheckout(
+                            // product.variants[0].id.toString(),
+                            productData.variants[0].id.toString(),
+                            values.quantity.toString(),
+                            values.size.toString(),
+                            // product.options[1].values[0].value,
+                            productData.options[1].values[0].value
+                            );
                           setLoading(true);
                           handleClick(e);
                         }}
@@ -412,14 +472,17 @@ function Product(props: IProps) {
                         Price:{" "}
                         <span data-testid="price">
                           {/* ${(currentItem.price * values.quantity).toFixed(2)} */}
-                  {/* ${(product.variants[0].price * values.quantity).toFixed(2)} */}
+                          {/* ${product.variants[0].price} */}
+                          {productData.variants[0].price}
                         </span>
                       </Typography>
                     </Grid>
                     <div className={classes.sectionMargin} />
                     <Grid item>
                       <Typography variant="h5">
-                        {currentItem.category}
+                        {/* {product.options[1].values[0].value} */}
+                        {productData.options[1].values[0].value}
+
                       </Typography>
                     </Grid>
                     <Grid container justify="flex-end">
@@ -445,7 +508,7 @@ function Product(props: IProps) {
           </Grid>
         </motion.div>
       </div>
-    </>
+    </div>
   );
 }
 

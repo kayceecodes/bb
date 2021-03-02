@@ -15,10 +15,12 @@ import {
   IMotions,
   IBraceletData,
 } from "../src/types/interfaces";
-// import { bracelets } from "../src/data/data"
+import { dataBracelets } from "../src/data/data"
 import Grid from "@material-ui/core/Grid/Grid";
 
 import Aos from "aos";
+import "aos/dist/aos.css";
+
 import BraceletCard from "../src/components/collections/braceletcard/BraceletCard";
 import Hidden from "@material-ui/core/Hidden/Hidden";
 
@@ -93,14 +95,9 @@ export function Collections(props: IProps) {
       title: product.title,
       price: product.variants[0].price,
       src: product.images[0].src,
-      category: product.options[2].values[0].value
+      category: product.options[1].values[0].value
     };
   });
-
-  // const filteredBracelets =
-  //   filterCategory === ""
-  //     ? bracelets
-  //     : bracelets.filter((item) => item.category === filterCategory)
 
   /**
    * If variable filterCategory is "", then return all
@@ -114,22 +111,7 @@ export function Collections(props: IProps) {
 
   useEffect(() => {
     fetchAllProducts();
-    if (products[0]) {
-      console.log(
-        "Collections Products Options Quantity: ",
-        products[0].options[1]
-      );
-      console.log(
-        "Collections Products Options Categories",
-        products[0].options[2]
-      );
-      console.log(
-        "Collections Products Options Size: ",
-        products[0].options[3]
-      );
-    }
 
-    // setFetchedBracelets()
     Aos.init({
       duration: 900,
     }); /*This is for a css effect when element appears, fades into dom */
@@ -152,6 +134,7 @@ export function Collections(props: IProps) {
 
   return (
     <>
+    {console.log(products)}
       <div onScroll={scrollEvent}>
         <motion.div
           style={props.pageStyle}
@@ -223,14 +206,6 @@ export function Collections(props: IProps) {
                       setValue={props.setValue}
                       data-test={"braceletCard"}
                     />
-                    {/* <BraceletCard
-                      name={item.name}
-                      price={item.price}
-                      src={item.src}
-                      category={item.category}
-                      setValue={props.setValue}
-                      data-test={"braceletCard"}
-                    /> */}
                   </Grid>
                 ))}
               </Grid>

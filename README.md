@@ -28,9 +28,13 @@ or:
 # bb
 
 
-## JS shopify Buy SDK Api  
+## Notes on using JS shopify Buy SDK Api  
           products[0].variants[0].price,
           products[0].title,
           products[0].images[0].src,
-          products[0].options[2].values[0].value,
-          products[0].options[2]
+          products[0].options[*].values[0].value
+          products[0].options[*].name
+
+## To Do
+    Work on back button to /shoppingcart from shopify
+    Work on the CSV. It's causing options[] values to be undefined

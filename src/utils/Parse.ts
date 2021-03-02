@@ -10,7 +10,21 @@ export const fixedTitleLength = (str: string, numOfChar: number) => {
   return str.length > numOfChar ? shortenedStr.concat("...") : str
 }
 
-// console.log(fixedTitleLength('Night Stones of Blue', 15))
+/**
+ * Takes the name of an item and returns a handle, replaces ' ' with '-'
+ * @param {string} itemName 
+ * @returns {string} handle
+ */
+export function convertNameToHandle(itemName: string) {
+  /* Find spaces */
+  let spaces = new RegExp("[ ]+", "g");
+  /* Then replace with hypens in between */
+  let handle = itemName.replace(spaces, "-");
+  
+  let uppercase = new RegExp("[A-Z]", "g");
+
+  return handle.replace(uppercase, (x: string) => x.toLowerCase());
+}
 
   /**
    * Takes in full path, and removes given string, from the path.

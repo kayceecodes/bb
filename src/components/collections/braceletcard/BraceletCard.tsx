@@ -1,13 +1,13 @@
-import React, { FunctionComponent } from "react";
+import React from "react";
 
 import Link from "../../../Link";
-
 import { IBraceletData } from "../../../types/interfaces";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Typography from "@material-ui/core/Typography/Typography";
 import Button from "@material-ui/core/Button/Button";
 import UseImgFile from "../../../ui/useImgFile/UseImgFile";
+import { convertNameToHandle } from "../../../utils/Parse";
 
 interface IProps {
   name: IBraceletData["name"];
@@ -50,40 +50,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function convertItemName(itemName: string) {
-  /* Find spaces */
-  let spaces = new RegExp("[ ]+", "g");
-  /* Then replace with hypens in between */
-  let namedRoute = itemName.replace(spaces, "-");
-
-  let uppercase = new RegExp("[A-Z]", "g");
-  return namedRoute.replace(uppercase, (x: string) => x.toLowerCase());
-}
-
 export default function BraceletCard(props: IProps) {
   const classes = useStyles();
-  // let { itemRouter } = router.query
 
-  const convertedItemName = convertItemName(props.name);
+  const handle = convertNameToHandle(props.name);
   // itemRouter = convertToRoute(props.name)
 
   return (
     <Button
       component={Link}
-      as={`/collections/${convertedItemName}`}
-      href={`/collections/${convertedItemName}`}
-      onClick={() => props.setValue(1)}
+      as={`/collections/${handle}`}
+      href={`/collections/${handle}`}
+      onClick={() => {props.setValue(1)}}
       data-testid="bracelet-card"
     >
-
-    {/*
-      <Button
-       component={Link}
-       as={`/collections/${convertedItemName}`}
-       href={`/collections/${product.handle}`}
-       onClick={() => props.setValue(1)}
-       data-testid="bracelet-card"
-     > */}
       <div className={classes.braceletCard}>
         <Typography variant="caption">
           {props.name} {UseImgFile(props.category)}

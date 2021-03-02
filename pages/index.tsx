@@ -19,14 +19,15 @@ import "aos/dist/aos.css";
 
 import Footer from "../src/ui/footer/Footer";
 
-import { bracelets } from "../src/data/data";
+import { dataBracelets } from "../src/data/data";
 import Tab from "@material-ui/core/Tab/Tab";
 import Tabs from "@material-ui/core/Tabs/Tabs";
 import { useRouter } from "next/router";
+import FeaturedProducts from '../src/landingpage/FeaturedProducts'
 
 interface IProps {
   value: number;
-  setValue: (value: number) => void;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
   setSelectedIndex: (value: number) => void;
   pageStyle: CSSProperties;
   pageAnimations: IPageAnimations;
@@ -159,16 +160,6 @@ const useStyles = makeStyles((theme) => ({
       right: "5%",
     },
   },
-
-  featuredBraceletsHeader: {
-    fontFamily: "Raleway",
-    color: "rgba(74,63,53, 0.85)",
-    marginTop: "15px",
-    // fontSize: "1.7rem",
-    [theme.breakpoints.up("md")]: {
-      fontSize: "2.4rem",
-    },
-  },
   paragraph: {
     font: "1.4rem Raleway",
     color: `${theme.palette.common.dimGray}`,
@@ -192,60 +183,13 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "1.10rem",
       lineHeight: "3",
     },
-  },
-  braceletsContainer: {
-    margin: "5px auto",
-    paddingBottom: "50px",
-    [theme.breakpoints.up("sm")]: {
-      marginBottom: "140px",
-      marginTop: "100px",
-    },
-  },
-  braceletImgs: {
-    // width: '60%',
-    // width: '200px', //TEST OUT XS and the GRID SYSTEM
-    [theme.breakpoints.up("sm")]: {
-      width: "220px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      width: "140px",
-    },
-  },
-  featuredPricesBtn: {
-    border: "2px solid transparent",
-    marginTop: "15px",
-    [theme.breakpoints.up("sm")]: {
-      marginTop: "25px",
-    },
-    "&:hover": {
-      border: `2px solid ${theme.palette.common.slateTan}`,
-    },
-  },
-  featuredName: {
-    marginBottom: "-15px",
-    marginTop: "50px",
-  },
-  featuredPrices: {
-    position: "absolute",
-    top: "40%",
-    left: "37%",
-    color: theme.palette.common.dimegray,
-    // fontFamily: 'Raleway',
-    fontSize: "0.85rem",
-    fontWeight: 400,
-    textAlign: "center",
-    margin: "0px auto",
-    [theme.breakpoints.up("lg")]: {
-      left: "40%",
-    },
-    // border: `2px solid ${theme.palette.common.dimegray}`,
-  },
+  },  
 }));
 
 export default function Home(props: IProps) {
   const classes = useStyles();
   const theme = useTheme();
-  const router = useRouter(); //History obj from react-router
+  const router = useRouter();
   const collectionsPath = "/collections/";
   enum Images {
     HeroMobile = "/assets/images/bracelets/heroImgMobile5.jpg",
@@ -259,8 +203,8 @@ export default function Home(props: IProps) {
     md: useMediaQuery(theme.breakpoints.down("md")),
     lg: useMediaQuery(theme.breakpoints.down("lg")),
     xl: useMediaQuery(theme.breakpoints.down("xl")),
-  }; // If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles
-  const featuredBracelets = [bracelets[0], bracelets[1], bracelets[2]];
+  };//If query matches sm,md,lg,xl then use the 'matches' object to change styles
+  const featuredBracelets = [dataBracelets[0], dataBracelets[1], dataBracelets[2]];
 
   /** Return tabs to be highlighted when route is chosen and clicked
    * @param {show, routeIndex, tabProps}
@@ -404,139 +348,8 @@ export default function Home(props: IProps) {
             </p>
           </Grid>
           {/* Header - Featured Bracelets */}
-          <div className={classes.centering}>
-            <Typography
-              component="h2"
-              variant="h2"
-              data-aos="fade-left"
-              id="featuredBracelets"
-            >
-                Featured Bracelets
-            </Typography>
-            <div className={classes.headersUnderline}>
-              <div className={classes.thinInnerLine} />      
-            </div>
-          </div>
-          {/* Bracelet Container */}
-          <Grid
-            container
-            direction="row"
-            justify="center"
-            className={classes.braceletsContainer}
-            style={{ maxWidth: "78%" }}
-          >
-            <Grid
-              data-aos="fade-up"
-              item
-              xs={10}
-              sm={3}
-              style={{ position: "relative" }}
-            >
-              <Typography
-                className={classes.featuredName}
-                paragraph={true}
-                variant="caption"
-              >
-                {featuredBracelets[0].name}
-              </Typography>
-              <Button
-                className={classes.featuredPricesBtn}
-                component={Link}
-                href={convertToRoute(
-                  collectionsPath,
-                  featuredBracelets[0].name
-                )}
-                onClick={() => props.setValue(1)}
-              >
-                <Typography
-                  className={classes.featuredPrices}
-                  paragraph={true}
-                  variant="caption"
-                >
-                  ${featuredBracelets[0].price}
-                </Typography>
-                <img
-                  src={Images.Bracelet1}
-                  className={classes.braceletImgs}
-                  alt="bracelet"
-                />
-              </Button>
-            </Grid>
-            <Grid
-              data-aos="fade-up"
-              item
-              xs={10}
-              sm={3}
-              style={{ position: "relative" }}
-            >
-              <Typography
-                className={classes.featuredName}
-                paragraph={true}
-                variant="caption"
-              >
-                {featuredBracelets[1].name}
-              </Typography>
-              <Button
-                className={classes.featuredPricesBtn}
-                component={Link}
-                href={convertToRoute(
-                  collectionsPath,
-                  featuredBracelets[1].name
-                )}
-                onClick={() => props.setValue(1)}
-              >
-                <Typography
-                  className={classes.featuredPrices}
-                  paragraph={true}
-                  variant="caption"
-                >
-                  ${featuredBracelets[1].price}
-                </Typography>
-                <img
-                  src={Images.Bracelet2}
-                  className={classes.braceletImgs}
-                  alt="bracelet"
-                />
-              </Button>
-            </Grid>
-            <Grid
-              data-aos="fade-up"
-              item
-              xs={10}
-              sm={3}
-              style={{ position: "relative" }}
-            >
-              <Typography
-                className={classes.featuredName}
-                paragraph={true}
-                variant="caption"
-              >
-                {featuredBracelets[2].name}
-              </Typography>
-              <Button
-                className={classes.featuredPricesBtn}
-                component={Link}
-                href={convertToRoute(
-                  collectionsPath,
-                  featuredBracelets[2].name
-                )}
-                onClick={() => props.setValue(1)}
-              >
-                <Typography
-                  className={classes.featuredPrices}
-                  paragraph={true}
-                  variant="caption"
-                >
-                  ${featuredBracelets[2].price}
-                </Typography>
-                <img
-                  src={Images.Bracelet3}
-                  className={classes.braceletImgs}
-                  alt="bracelet"
-                />
-              </Button>
-            </Grid>
-          </Grid>
+          
+        <FeaturedProducts setValue={props.setValue} />
         </Grid>
         <Footer
           setValue={props.setValue}

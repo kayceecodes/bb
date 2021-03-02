@@ -157,7 +157,7 @@ export default function Footer(props: IProps) {
         </Grid>
         {/* Rightside of Footer*/}
         <Grid item xs={12} sm={6}>
-          <Grid container sm={5} justify="flex-start">
+          <Grid container style={{width: matches.sm ? '40%' : '100%'}}>
             <Grid item xs={12} className={classes.footerRight}>
               <Grid
                 container
