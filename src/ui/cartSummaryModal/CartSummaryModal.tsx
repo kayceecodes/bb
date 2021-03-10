@@ -1,5 +1,6 @@
 import React, { useEffect } from "react"
 import Link from "../../Link"
+import { useRouter } from 'next/router'
 import { connect } from "react-redux"
 
 import Button from "@material-ui/core/Button/Button"
@@ -10,7 +11,7 @@ import Popover from "@material-ui/core/Popover/Popover"
 import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery"
 import theme from "../Theme"
 
-import { IBraceletData, ICartItems } from "../../types/interfaces"
+import { ICartItems } from "../../types/interfaces"
 
 import Aos from "aos"
 import "aos/dist/aos.css"
@@ -82,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CartSummaryModal = (props: IProps) => {
   const classes = useStyles()
+  const router = useRouter()
   const matches = {
     sm: useMediaQuery(theme.breakpoints.up("sm")),
     md: useMediaQuery(theme.breakpoints.up("md")),
@@ -90,7 +92,7 @@ const CartSummaryModal = (props: IProps) => {
   } // If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles based on width of the window
 
   /*Close Modal backdrop*/
-  const handleClose = () => {
+  const closeModal = () => {
     props.setOpen(false)
   }
 
@@ -98,7 +100,7 @@ const CartSummaryModal = (props: IProps) => {
    *  2 clear values in the form->DisplayItem,
    *  3 then route to checkout */
   const handleRouteToCheckout = () => {
-    handleClose()
+    closeModal()
     props.clearValues()
     props.setValue(3)
   }
@@ -109,18 +111,20 @@ const CartSummaryModal = (props: IProps) => {
 
   return (
     <Backdrop
-      style={{ zIndex: 1 }}
+      style={{ zIndex: 1, backgroundColor: '#ffffff80'}}
       onClick={() => {
-        handleClose()
+        closeModal()
+        router.push('/collections/')
         props.clearValues()
       }}
       open={props.open}
     >
       <Popover
         open={props.open}
+        anchorEl={props.anchorEl}
         anchorOrigin={{
-          vertical: matches.sm ? 520 : 320,
-          horizontal: "center",
+          vertical: matches.sm ? 20 : 100,
+          horizontal: matches.sm ? -150 : -100,
         }}
         transformOrigin={{
           vertical: "center",
@@ -197,7 +201,7 @@ const CartSummaryModal = (props: IProps) => {
 
           {/* Summary Buttons */}
           <Grid item>
-            <Grid container data-aos="fade-up">
+            <Grid container>
               <Grid item xs={12} sm={6}>
                 <Button
                   className={classes.summaryBtn}
@@ -212,7 +216,8 @@ const CartSummaryModal = (props: IProps) => {
                 <Button
                   className={classes.summaryBtn}
                   onClick={() => {
-                    handleClose()
+                    closeModal()
+                    router.push('/collections/')
                     props.clearValues()
                   }}
                 >

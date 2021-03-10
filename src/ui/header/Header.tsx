@@ -16,7 +16,6 @@ import Sidedrawer from "./sidedrawer/Sidedrawer";
 
 import { MouseEvent } from "../../types/aliases"; // TYPE - Events
 
-import { bracelets } from "../../data/data";
 import Typography from "@material-ui/core/Typography/Typography";
 import { convertNameToHandle } from "../../utils/Parse";
 
@@ -106,7 +105,6 @@ export default function Header(props: any) {
     setOpenMenu(true);
   };
   const handleMenuItemClick = (e: MouseEvent, i: number) => {
-    //   setAnchorEl(null);
     e;
     setOpenMenu(false);
     props.setSelectedIndex(i);

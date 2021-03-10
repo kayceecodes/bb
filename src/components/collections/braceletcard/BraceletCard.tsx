@@ -52,9 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BraceletCard(props: IProps) {
   const classes = useStyles();
-
   const handle = convertNameToHandle(props.name);
-  // itemRouter = convertToRoute(props.name)
 
   return (
     <Button

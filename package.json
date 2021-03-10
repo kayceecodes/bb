@@ -11,6 +11,7 @@
     "@types/jump.js": "^1.0.3",
     "@types/react-redux": "^7.1.16",
     "@types/shopify-buy": "^2.10.5",
+    "@types/styled-components": "^5.1.7",
     "aos": "^2.3.4",
     "axios": "^0.21.1",
     "clsx": "latest",
@@ -23,7 +24,8 @@
     "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "redux-thunk": "^2.3.0",
-    "shopify-buy": "^2.11.0"
+    "shopify-buy": "^2.11.0",
+    "styled-components": "^5.2.1"
   },
   "scripts": {
     "dev": "next",

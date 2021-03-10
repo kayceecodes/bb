@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid/Grid';
 import Hidden from '@material-ui/core/Hidden/Hidden';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
 import Autocomplete from '@material-ui/lab/Autocomplete/Autocomplete';
-import { IBraceletData } from '../../types/interfaces';
 import TextField from '@material-ui/core/TextField/TextField';
 import { ShopContext } from '../../components/context/ShopContext';
 import { Product } from 'shopify-buy';

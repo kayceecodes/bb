@@ -23,9 +23,6 @@ or:
 ## The idea behind the example
 
 [Next.js](https://github.com/zeit/next.js) is a framework for server-rendered React apps.
-# bb
-# bb
-# bb
 
 
 ## Notes on using JS shopify Buy SDK Api  
@@ -36,5 +33,24 @@ or:
           products[0].options[*].name
 
 ## To Do
-    Work on back button to /shoppingcart from shopify
-    Work on the CSV. It's causing options[] values to be undefined
+
+    1.  Cart - Add to shopify cart
+    2X  Work on back button to /shoppingcart from shopify
+        note - Chromium clears either cache or cookies, it works.
+    3X  Work on the CSV. It's causing options[] values to be undefined
+    4.  Remove all unnecessary string conversion methods
+    5X  Add more products, at least one for 'featured bracelets'
+    6X  Featured Links to send client to product
+    7.  Change values.name to values.title throughout redux & product
+    8X  FeaturedProducts needs rendered elements with key
+    9X  Cart Card has two set of quotations for Inches
+    10. Tabs in Sidedrawer are setting Values to wrong tab.
+        Shows up only in console.
+    11. [product], Replace Go to checkout button
+    12x 'anchorEl' provided to Popover is invalid.
+        Should be an Element instance. It's undefined instead.
+    13. 'Search Bracelets' component does not setvalues correctly
+        After first change of url it stops working
+    14. Checkout Button goes to collections in CartSummaryModal.tsx
+# Questions
+    Pro/Cons & Difference between href and router.push

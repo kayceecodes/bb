@@ -195,7 +195,7 @@ export default function Item(props: IProps) {
                   marginLeft: "4px",
                 }}
               >
-                {"Size " + props.size + '"'}
+                {"Size " + props.size}
               </span>
             </Typography>
 

@@ -47,6 +47,7 @@ export class ShopPrivder extends Component {
     localStorage.setItem("checkout_id", checkout.id as any); // ??? Potentail Type Error in checkout object
     this.setState({ checkout: checkout });
   };
+
   /**
    * Fetch stored checkout from localStorage
    * @memberOf ShopPrivder
@@ -61,7 +62,6 @@ export class ShopPrivder extends Component {
         console.log("Error Message, in ShopContext fetchCheckout: ", err);
       });
   };
-  // checkout id Z2lkOi8vc2hvcGlmeS9DaGVja291dC8yOGVhZmQwM2Q1OTk5MmY4MWRlZWRmZDRlYTU5YzEwYz9rZXk9YjM3Njc2NWVhMjRjMzc0NDNlZTExMzQ2ZGY2NzdhNjQ=
 
   /**
    * @param variantId
@@ -103,7 +103,6 @@ export class ShopPrivder extends Component {
       });
   };
 
-  //  http://shopify.github.io/js-buy-sdk/ - Under 'Fetching Products'
   fetchAllProducts = async () => {
     // Fetch all products in your shop
     await client.product.fetchAll().then((products) => {

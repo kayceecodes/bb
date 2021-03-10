@@ -15,7 +15,6 @@ import {
   IMotions,
   IBraceletData,
 } from "../src/types/interfaces";
-import { dataBracelets } from "../src/data/data"
 import Grid from "@material-ui/core/Grid/Grid";
 
 import Aos from "aos";
@@ -210,8 +209,6 @@ export function Collections(props: IProps) {
                 ))}
               </Grid>
             </Grid>
-            {/* EO Cards CONTAINER - nested*/}
-            {/* EO Cards ITEM */}
           </Grid>
         </motion.div>
         {revealFilterDrawer === true ? (

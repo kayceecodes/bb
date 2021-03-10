@@ -19,7 +19,6 @@ import "aos/dist/aos.css";
 
 import Footer from "../src/ui/footer/Footer";
 
-import { dataBracelets } from "../src/data/data";
 import Tab from "@material-ui/core/Tab/Tab";
 import Tabs from "@material-ui/core/Tabs/Tabs";
 import { useRouter } from "next/router";
@@ -190,7 +189,6 @@ export default function Home(props: IProps) {
   const classes = useStyles();
   const theme = useTheme();
   const router = useRouter();
-  const collectionsPath = "/collections/";
   enum Images {
     HeroMobile = "/assets/images/bracelets/heroImgMobile5.jpg",
     HeroParallax = "/assets/images/bracelets/bensonbracelet-hero-parallax.jpg",
@@ -204,7 +202,6 @@ export default function Home(props: IProps) {
     lg: useMediaQuery(theme.breakpoints.down("lg")),
     xl: useMediaQuery(theme.breakpoints.down("xl")),
   };//If query matches sm,md,lg,xl then use the 'matches' object to change styles
-  const featuredBracelets = [dataBracelets[0], dataBracelets[1], dataBracelets[2]];
 
   /** Return tabs to be highlighted when route is chosen and clicked
    * @param {show, routeIndex, tabProps}
@@ -247,17 +244,6 @@ export default function Home(props: IProps) {
     opacity: 0.8,
     zIndex: 3,
   };
-
-  function convertToRoute(nestedRoute: string, itemName: string) {
-    // Example www.website.com/nestedRoute/itemName
-    itemName = nestedRoute + itemName;
-    let spaces = new RegExp("[ ]+", "g");
-    let namedRoute = itemName.replace(spaces, "");
-    // return namedRoute;
-    let uppercase = new RegExp("[A-Z]", "g");
-
-    return namedRoute.replace(uppercase, (x: string) => x.toLowerCase());
-  }
 
   const setRouteToCollections = () => {
     router.push("/collections");
