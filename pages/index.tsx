@@ -22,7 +22,7 @@ import Footer from "../src/ui/footer/Footer";
 import Tab from "@material-ui/core/Tab/Tab";
 import Tabs from "@material-ui/core/Tabs/Tabs";
 import { useRouter } from "next/router";
-import FeaturedProducts from '../src/landingpage/FeaturedProducts'
+import FeaturedProducts from '../src/ui/landingpage/FeaturedProducts'
 
 interface IProps {
   value: number;

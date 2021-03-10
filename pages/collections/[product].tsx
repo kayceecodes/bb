@@ -7,15 +7,13 @@ import {
   IMotions,
   ICartItems,
 } from "../../src/types/interfaces";
+import { MouseEvent } from "../../src/types/aliases"; // TYPE - Events
 
 import Client from "shopify-buy";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid/Grid";
-import Icon from "@material-ui/core/Icon/Icon";
 import Typography from "@material-ui/core/Typography/Typography";
-import Button from "@material-ui/core/Button";
-
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 import { motion } from "framer-motion";
@@ -27,11 +25,8 @@ import { addToCart, addQuantityToItem } from "../../src/store/actions";
 import CartSummaryModal from "../../src/ui/cartSummaryModal/CartSummaryModal";
 import { ShopContext } from "../../src/components/context/ShopContext";
 import ProductInput from "../../src/components/forms/ProductInput";
-
-import styled from "styled-components";
 import ProductHeader from "../../src/ui/productHeader/ProductHeader";
 import BtnAddToCart from "../../src/ui/btnAddToCart/BtnAddToCart";
-import { MouseEvent } from "../../src/types/aliases"; // TYPE - Events
 
 interface IDisplayItemProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -145,9 +140,6 @@ function Product(props: IProps) {
   };
 
   useEffect(() => {
-    if (products.length < 1) {
-      router.push("/collections");
-    } else {
       Client.buildClient({
         domain: "benson-bracelets.myshopify.com",
         storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
@@ -163,8 +155,7 @@ function Product(props: IProps) {
             src: res.images[0].src
           })
         })
-    }
-  }, []);
+  }, [handle]);
 
   if (!productData.title)
     return (
@@ -196,7 +187,6 @@ function Product(props: IProps) {
             setOpen={setOpen}
             clearValues={clearValues}
           />
-
           <Grid container alignItems="center" direction="column">
             <div className={classes.sectionMargin} />
             <Grid item style={{ flexGrow: 1 }} xs={12}>

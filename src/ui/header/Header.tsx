@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "../../Link";
+
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import useScrollTrigger from "@material-ui/core/useScrollTrigger";
@@ -10,13 +11,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography/Typography";
+
 import Searchbar from "./Searchbar";
 import Headertabs from "./headertabs/Headertabs";
 import Sidedrawer from "./sidedrawer/Sidedrawer";
 
 import { MouseEvent } from "../../types/aliases"; // TYPE - Events
 
-import Typography from "@material-ui/core/Typography/Typography";
 import { convertNameToHandle } from "../../utils/Parse";
 
 interface IHideOnScrollProps {

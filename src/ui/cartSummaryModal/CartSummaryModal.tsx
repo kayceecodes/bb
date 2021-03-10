@@ -103,6 +103,7 @@ const CartSummaryModal = (props: IProps) => {
     closeModal()
     props.clearValues()
     props.setValue(3)
+    router.push('/shoppingcart')
   }
 
   useEffect(() => {
@@ -206,8 +207,8 @@ const CartSummaryModal = (props: IProps) => {
                 <Button
                   className={classes.summaryBtn}
                   onClick={() => handleRouteToCheckout()}
-                  component={Link}
-                  href="/shoppingcart"
+                  // component={Link}
+                  // href="/shoppingcart"
                 >
                   Checkout
                 </Button>
