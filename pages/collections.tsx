@@ -32,6 +32,9 @@ import FilterSideDrawer from "../src/ui/filterSideDrawer/FilterSideDrawer";
 import FilterCardBtns from "../src/ui/filterCardBtns/FilterCardBtns";
 import { ShopContext } from "../src/components/context/ShopContext";
 
+import Client, { Product } from "shopify-buy";
+import { useRouter } from "next/router";
+
 export interface IProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
@@ -39,6 +42,29 @@ export interface IProps {
   pageAnimations: IPageAnimations;
   motions: IMotions;
   jumpTo: (jumpingTarget: string | number | Element) => void;
+  products: any
+}
+
+export async function getStaticProps() {
+
+  let products = await Client.buildClient({
+    domain: "benson-bracelets.myshopify.com",
+    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2"
+  })
+  .product.fetchAll().then((products) => {
+    console.log('Products in getStaticProps: ', products)
+    
+    return products 
+  })
+  .catch((err) => {
+    console.log('Error Message: ', err)
+  })
+
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products))
+    },
+  };
 }
 
 /* Collections will show the gallery of the products and the other routes with the 
@@ -89,7 +115,7 @@ export function Collections(props: IProps) {
   }; /* If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles
         xs: 0, sm: 600 md: 960, lg:1280px, xl1920px*/
 
-  const bracelets: IBraceletData[] = products.map((product: any) => {
+  const bracelets: IBraceletData[] = props.products.map((product: any) => {
     return {
       title: product.title,
       price: product.variants[0].price,
@@ -110,7 +136,12 @@ export function Collections(props: IProps) {
 
   useEffect(() => {
     fetchAllProducts();
-
+    Client.buildClient({
+      domain: "benson-bracelets.myshopify.com",
+      storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+    }).product.fetchAll().then((data) => {
+      console.log('Data object: ', data)
+    })
     Aos.init({
       duration: 900,
     }); /*This is for a css effect when element appears, fades into dom */
@@ -122,6 +153,7 @@ export function Collections(props: IProps) {
   };
 
   useScrollPosition(({ prevPos, currPos }) => {
+
     let revealedPosition = 0;
     revealedPosition = matches.md ? 750 : 0;
     if (-currPos.y >= revealedPosition) {
@@ -133,7 +165,8 @@ export function Collections(props: IProps) {
 
   return (
     <>
-    {console.log(products)}
+    {console.log('Products in collections.tsx: ', products)}
+    {console.log('GetStaticProps - Props.products in collections.tsx: ', props.products)}
       <div onScroll={scrollEvent}>
         <motion.div
           style={props.pageStyle}

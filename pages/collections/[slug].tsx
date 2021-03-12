@@ -9,7 +9,7 @@ import {
 } from "../../src/types/interfaces";
 import { MouseEvent } from "../../src/types/aliases"; // TYPE - Events
 
-import Client from "shopify-buy";
+import Client, { Collection, Product as ProductData } from "shopify-buy";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid/Grid";
@@ -27,6 +27,46 @@ import { ShopContext } from "../../src/components/context/ShopContext";
 import ProductInput from "../../src/components/forms/ProductInput";
 import ProductHeader from "../../src/ui/productHeader/ProductHeader";
 import BtnAddToCart from "../../src/ui/btnAddToCart/BtnAddToCart";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { convertNameToHandle } from "../../src/utils/Parse";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  let productsData: Promise<Collection[] | ProductData[]> = Client.buildClient({
+    domain: "benson-bracelets.myshopify.com",
+    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+  })
+    .product.fetchAll()
+    .then((products) => {
+      return products;
+    });
+
+  return {
+    paths: (await productsData).map((productData: any) => ({
+      params: { slug: productData.handle },
+    })),
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  /* ? What is being passed into context parameter? */
+  let { params } = context;
+
+  // let res = Client.buildClient({
+
+  let product = await Client.buildClient({
+    domain: "benson-bracelets.myshopify.com",
+    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+  })
+  .product.fetchByHandle(params?.slug as string)
+  .then((res) => res)
+
+  return {
+    props: {
+      product: JSON.parse(JSON.stringify(product)),
+    },
+  };
+};
 
 interface IDisplayItemProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -77,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Product(props: IProps) {
+function Product(props: any) {
   const { product, products, addItemToCheckout } = useContext<any>(ShopContext);
   const classes = useStyles();
   const dispatch: Dispatch<any> = useDispatch();
@@ -88,11 +128,11 @@ function Product(props: IProps) {
   const handle = router.asPath.substring(13);
   const [loading, setLoading] = React.useState(false);
   const [values, setValues] = React.useState<ICartItems>({
-    name: 'Not Yet Updated',
+    name: "Not Yet Updated",
     size: 0,
     quantity: 1,
     price: 0,
-    src: '',
+    src: "",
     id: "",
   });
 
@@ -112,7 +152,7 @@ function Product(props: IProps) {
         values.size /*JS automatically adds as if size is a string */,
     };
     /*Pull all current ids in cartItems*/
-    const ids = props.cartItems.map((item) => item.id);
+    const ids = props.cartItems.map((item: any) => item.id);
 
     /*Add quantities through dispatch(addQty) only if ids match, 
     if not then dispatch(addToCart) for a new item with a different size */
@@ -134,37 +174,45 @@ function Product(props: IProps) {
 
   const loadCartSummary = (e: MouseEvent) => {
     setAnchorEl(e.currentTarget);
-    setLoading(true)
+    setLoading(true);
     setTimeout(() => setLoading(false), 500);
     setTimeout(() => setOpen(true), 500);
   };
 
   useEffect(() => {
-      Client.buildClient({
-        domain: "benson-bracelets.myshopify.com",
-        storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
-      })
-        .product.fetchByHandle(handle)
-        .then((res) => {
-          console.log("Response: ", res);
-          setProductData(res);
-          setValues({
-            ...values,
-            name: res.title,
-            price: parseInt(res.variants[0].price),
-            src: res.images[0].src
-          })
-        })
+    // if (products.length < 1) {
+    //   router.push("/collections");
+    // } else {
+    //   Client.buildClient({
+    //     domain: "benson-bracelets.myshopify.com",
+    //     storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+    //   })
+    //     .product.fetchByHandle(handle)
+    //     .then((res) => {
+    //       console.log("Response: ", res);
+    //       setProductData(res);
+    //       setValues({
+    //         ...values,
+    //         name: res.title,
+    //         price: parseInt(res.variants[0].price),
+    //         src: res.images[0].src,
+    //       });
+    //     });
+    // }
   }, [handle]);
 
-  if (!productData.title)
+  if (!props.product.title)
     return (
-      <div style={{position: 'absolute', top: '50%', left: '50%'}}>
+      <div style={{ position: "absolute", top: "50%", left: "50%" }}>
         <CircularProgress color="primary" />
       </div>
-    )
+    );
   return (
     <div>
+      {console.log(
+        "GetStaticProps ProductData in [product].tsx: ",
+        props.product
+      )}
       <div style={{ position: "relative" }}>
         <motion.div
           style={{
@@ -190,7 +238,7 @@ function Product(props: IProps) {
           <Grid container alignItems="center" direction="column">
             <div className={classes.sectionMargin} />
             <Grid item style={{ flexGrow: 1 }} xs={12}>
-              <ProductHeader title={productData.title} />
+              <ProductHeader title={props.product.title} />
             </Grid>
             <div className={classes.sectionMargin} />
             {/*Separate Name from item's img and details*/}
@@ -200,7 +248,7 @@ function Product(props: IProps) {
                 <Grid item sm={6}>
                   {/* LEFT SIDE OF ITEM - Img Of Bracelet */}
                   <img
-                    src={productData.images[0].src}
+                    src={props.product.images[0].src}
                     className={classes.itemImg}
                     alt="bracelet displayed"
                   />
@@ -249,14 +297,15 @@ function Product(props: IProps) {
                       <Typography variant="body1">
                         Price:{" "}
                         <span data-testid="price">
-                          {productData.variants[0].price}
+                          {/* {productData.variants[0].price} */}
+                          {props.product.variants[0].price}
                         </span>
                       </Typography>
                     </Grid>
                     <div className={classes.sectionMargin} />
                     <Grid item>
                       <Typography variant="h5">
-                        {productData.options[1].values[0].value}
+                        {props.product.options[1].values[0].value}
                       </Typography>
                     </Grid>
                     <Grid container justify="flex-end">

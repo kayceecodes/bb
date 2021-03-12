@@ -100,7 +100,7 @@ const CartSummaryModal = (props: IProps) => {
    *  2 clear values in the form->DisplayItem,
    *  3 then route to checkout */
   const handleRouteToCheckout = () => {
-    closeModal()
+    // closeModal()
     props.clearValues()
     props.setValue(3)
     router.push('/shoppingcart')
