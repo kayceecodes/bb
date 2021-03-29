@@ -46,7 +46,7 @@ or:
     9X  Cart Card has two set of quotations for Inches
     10X Tabs in Sidedrawer are setting Values to wrong tab.
         Shows up only in console.
-    11. [product], Replace Go to checkout button
+    11. [slug], Replace Go to checkout button
     12x 'anchorEl' provided to Popover is invalid.
         Should be an Element instance. It's undefined instead.
     13X 'Search Bracelets' component does not setvalues correctly
@@ -55,8 +55,27 @@ or:
         so it wouldn't re-render when the handle changed.
     14. Checkout Button goes to collections in CartSummaryModal.tsx
     15. GetStaticProps needs to find product by handle 
-    16. Add Variant selections in [product].tsx
+    16. Add Variant selections in [slug].tsx
+    17. AddToCartBtn should still be able to add product
+    18. Remove productData [slug].tsx
+    19. Remove product, products from useContext [slug].tsx
+    20. Adjust
+    21. Clear values need to ONLY REMOVE quantity and sizes!
 
 # Questions
     Pro/Cons & Difference between Link href and router.push
+        SE see's html
+        router isn't shown
+        router.push is great for re enforcement
     Refs Advantages over Props.
+    Why does returning a response
+
+# Plan out Shopping Cart & Shopify Cart
+    From the Shopping Cart Page
+    - Update quantity Subtract/Add
+    - Remove Item all together
+
+    Redux Cart
+    - check-id in redux
+    - 
+

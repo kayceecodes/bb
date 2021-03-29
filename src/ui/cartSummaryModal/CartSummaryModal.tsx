@@ -1,30 +1,34 @@
-import React, { useEffect } from "react"
-import Link from "../../Link"
-import { useRouter } from 'next/router'
-import { connect } from "react-redux"
+import React, { useEffect } from "react";
+import Link from "../../Link";
+import { useRouter } from "next/router";
+import { connect } from "react-redux";
 
-import Button from "@material-ui/core/Button/Button"
-import Grid from "@material-ui/core/Grid/Grid"
-import makeStyles from "@material-ui/core/styles/makeStyles"
-import Typography from "@material-ui/core/Typography/Typography"
-import Popover from "@material-ui/core/Popover/Popover"
-import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery"
-import theme from "../Theme"
+import Button from "@material-ui/core/Button/Button";
+import Grid from "@material-ui/core/Grid/Grid";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Typography from "@material-ui/core/Typography/Typography";
+import Popover from "@material-ui/core/Popover/Popover";
+import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
+import theme from "../Theme";
 
-import { ICartItems } from "../../types/interfaces"
+import { ICartItems } from "../../types/interfaces";
 
-import Aos from "aos"
-import "aos/dist/aos.css"
-import Backdrop from "@material-ui/core/Backdrop/Backdrop"
+import Aos from "aos";
+import "aos/dist/aos.css";
+import Backdrop from "@material-ui/core/Backdrop/Backdrop";
 
 interface IProps {
-  setValue: React.Dispatch<React.SetStateAction<number>>
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  open: boolean
-  item: ICartItems
-  cartTotal: number
-  clearValues(): void
-  anchorEl: HTMLElement | undefined
+  title: string;
+  image: string;
+  quantity: number;
+  price: string;
+  setValue: React.Dispatch<React.SetStateAction<number>>;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  open: boolean;
+  // item: ICartItems
+  cartTotal: number;
+  clearValues(): void;
+  anchorEl: HTMLElement | undefined;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -37,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   popoverPosition: {
-    top: '115px'
+    top: "115px",
   },
   arrow: {
     fontSize: "1.6rem",
@@ -79,44 +83,44 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.orange,
     },
   },
-}))
+}));
 
 const CartSummaryModal = (props: IProps) => {
-  const classes = useStyles()
-  const router = useRouter()
+  const classes = useStyles();
+  const router = useRouter();
   const matches = {
     sm: useMediaQuery(theme.breakpoints.up("sm")),
     md: useMediaQuery(theme.breakpoints.up("md")),
     lg: useMediaQuery(theme.breakpoints.up("lg")),
     xl: useMediaQuery(theme.breakpoints.up("xl")),
-  } // If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles based on width of the window
+  }; // If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles based on width of the window
 
   /*Close Modal backdrop*/
   const closeModal = () => {
-    props.setOpen(false)
-  }
+    props.setOpen(false);
+  };
 
   /** 1 Close modal,
    *  2 clear values in the form->DisplayItem,
    *  3 then route to checkout */
   const handleRouteToCheckout = () => {
-    // closeModal()
-    props.clearValues()
-    props.setValue(3)
-    router.push('/shoppingcart')
-  }
+    closeModal();
+    props.clearValues();
+    props.setValue(3);
+    router.push("/shoppingcart");
+  };
 
   useEffect(() => {
-    Aos.init({ duration: 900 })
-  }, [])
+    Aos.init({ duration: 900 });
+  }, []);
 
   return (
     <Backdrop
-      style={{ zIndex: 1, backgroundColor: '#ffffff80'}}
+      style={{ zIndex: 1, backgroundColor: "#ffffff80" }}
       onClick={() => {
-        closeModal()
-        router.push('/collections/')
-        props.clearValues()
+        // closeModal();
+        // router.push("/collections/");
+        // props.clearValues();
       }}
       open={props.open}
     >
@@ -145,10 +149,10 @@ const CartSummaryModal = (props: IProps) => {
               {/* Container Name Price Size & Total*/}
               <Grid item xs={6} sm={4}>
                 <img
-                  src={props.item.src}
+                  src={props.image}
                   className={classes.itemImg}
                   data-aos="fade-right"
-                  alt={props.item.name}
+                  alt={props.title}
                 />
               </Grid>
               <Grid item xs={6} sm={4}>
@@ -160,17 +164,17 @@ const CartSummaryModal = (props: IProps) => {
                   <Typography variant="h5">
                     <strong>Name</strong>
                   </Typography>
-                  <Typography variant="body2">{props.item.name}</Typography>
+                  <Typography variant="body2">{props.title}</Typography>
 
                   <Typography variant="h5">
                     <strong>Price</strong>
                   </Typography>
-                  <Typography variant="body2">${props.item.price}</Typography>
+                  <Typography variant="body2">${props.price}</Typography>
 
                   <Typography variant="h5">
                     <strong>Qty</strong>
                   </Typography>
-                  <Typography variant="body2">{props.item.quantity}</Typography>
+                  <Typography variant="body2">{props.quantity}</Typography>
                 </Grid>
               </Grid>
               <div className={classes.sectionMargin} />
@@ -217,9 +221,9 @@ const CartSummaryModal = (props: IProps) => {
                 <Button
                   className={classes.summaryBtn}
                   onClick={() => {
-                    closeModal()
-                    router.push('/collections/')
-                    props.clearValues()
+                    closeModal();
+                    router.push("/collections/");
+                    props.clearValues();
                   }}
                 >
                   Continue Shopping
@@ -230,11 +234,11 @@ const CartSummaryModal = (props: IProps) => {
         </Grid>
       </Popover>
     </Backdrop>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state: any) => ({
   cartTotal: state.cart.cartTotal,
-})
+});
 
-export default connect(mapStateToProps)(CartSummaryModal)
+export default connect(mapStateToProps)(CartSummaryModal);

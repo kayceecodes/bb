@@ -5,7 +5,7 @@ import Client from "shopify-buy";
 const client = Client.buildClient({
   domain: "benson-bracelets.myshopify.com",
   // storefrontAccessToken: "69542136315009d67e27c9e7ffed55f2",
-  storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2"
+  storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
 });
 
 const ShopContext = React.createContext({}); // ??? default Values Need to be figured out
@@ -70,18 +70,12 @@ export class ShopPrivder extends Component {
    */
   addItemToCheckout = async (
     variantId: string,
-    quantity: string,
-    size: string,
-    category: string
+    quantity: number
   ) => {
     const lineItemsToAdd = [
       {
         variantId,
-        quantity: parseInt(quantity, 10),
-        customAttributes: [
-          { key: "Size", value: size },
-          { key: "Category", value: category },
-        ],
+        quantity: quantity,
       },
     ];
     const checkout = await client.checkout.addLineItems(
@@ -101,6 +95,20 @@ export class ShopPrivder extends Component {
       .then((checkout) => {
         this.setState({ checkout: checkout });
       });
+  };
+
+  updateProductQuantity = ( variantId: string, quantity: number) => {
+    const checkoutId = localStorage.checkout_id; // ID of an existing checkout
+
+    const lineItemsToUpdate = [
+      {id: variantId, quantity: quantity}
+    ];
+    
+    // Update the line item on the checkout (change the quantity or variant)
+    client.checkout.updateLineItems(checkoutId, lineItemsToUpdate).then((checkout) => {
+      // Do something with the updated checkout
+      console.log(checkout.lineItems); // Quantity of line item 'Z2lkOi8vc2h...' updated to 2
+    });
   };
 
   fetchAllProducts = async () => {

@@ -4,7 +4,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import Theme from "../src/ui/Theme";
 import FramerMotionProvider from "../src/ui/hoc/FramerMotionProvider";
 // Inserted Below
-
+import { useRouter } from 'next/router'
 import Header from "../src/ui/header/Header";
 import { AnimatePresence } from "framer-motion";
 import { Provider } from "react-redux";
@@ -25,6 +25,7 @@ export default function MyApp(props: AppProps) {
   //Inserted Below
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [value, setValue] = useState(0);
+  const router = useRouter()
 
   const setJump = (
     jumpingTarget: string | number | Element // Jump based on where the jump() is called from
@@ -57,8 +58,9 @@ export default function MyApp(props: AppProps) {
         />
           <FramerMotionProvider>
             {(props) => (
-              <AnimatePresence>
+              <AnimatePresence exitBeforeEnter>
                 <Component
+                key={router.pathname}
                 value={value}
                 setValue={setValue} 
                 {...pageProps} 
@@ -72,3 +74,4 @@ export default function MyApp(props: AppProps) {
     </React.Fragment>
   );
 }
+

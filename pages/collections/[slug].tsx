@@ -1,5 +1,5 @@
-import { useRouter } from "next/router";
 import React, { CSSProperties, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import {
   IBraceletData,
@@ -28,7 +28,6 @@ import ProductInput from "../../src/components/forms/ProductInput";
 import ProductHeader from "../../src/ui/productHeader/ProductHeader";
 import BtnAddToCart from "../../src/ui/btnAddToCart/BtnAddToCart";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { convertNameToHandle } from "../../src/utils/Parse";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let productsData: Promise<Collection[] | ProductData[]> = Client.buildClient({
@@ -52,15 +51,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
   /* ? What is being passed into context parameter? */
   let { params } = context;
 
-  // let res = Client.buildClient({
-
   let product = await Client.buildClient({
     domain: "benson-bracelets.myshopify.com",
     storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
   })
   .product.fetchByHandle(params?.slug as string)
   .then((res) => res)
-
+  
+  console.log('GetstaticProps - Productproduct', product)
   return {
     props: {
       product: JSON.parse(JSON.stringify(product)),
@@ -81,7 +79,11 @@ interface IGlobalState {
   cartItems: ICartItems[];
 }
 
-type IProps = IDisplayItemProps & IBraceletData & IGlobalState;
+// type aProps = IDisplayItemProps & IBraceletData & IGlobalState;
+
+interface Props extends IDisplayItemProps, IBraceletData, IGlobalState {
+  product: ProductData
+}
 
 const useStyles = makeStyles((theme) => ({
   sectionMargin: {
@@ -117,15 +119,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Product(props: any) {
-  const { product, products, addItemToCheckout } = useContext<any>(ShopContext);
+function Product(props: Props) {
+  const { addItemToCheckout } = useContext<any>(ShopContext);
   const classes = useStyles();
   const dispatch: Dispatch<any> = useDispatch();
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement>();
-  const [productData, setProductData] = useState<typeof product>({});
-  const router = useRouter();
-  const handle = router.asPath.substring(13);
   const [loading, setLoading] = React.useState(false);
   const [values, setValues] = React.useState<ICartItems>({
     name: "Not Yet Updated",
@@ -141,15 +140,14 @@ function Product(props: any) {
   };
 
   /** Map through ids in CartItems then checks if it includes the called id
-   *  @param newItem
+   *  @param newItem {ICartItems}
    *  @returns {void}
    */
   const onAddToCart = (newItem: ICartItems) => {
     newItem = {
       ...newItem,
-      id:
-        values.name +
-        values.size /*JS automatically adds as if size is a string */,
+      id: props.product.id
+       
     };
     /*Pull all current ids in cartItems*/
     const ids = props.cartItems.map((item: any) => item.id);
@@ -164,42 +162,20 @@ function Product(props: any) {
   /* Clears values in the options */
   const clearValues = () =>
     setValues({
-      name: "Cleared",
+      name: "",
       size: 0,
       quantity: 1,
       price: 0,
-      src: "Cleared",
-      id: "Cleared",
+      src: "",
+      id: "",
     });
 
   const loadCartSummary = (e: MouseEvent) => {
     setAnchorEl(e.currentTarget);
-    setLoading(true);
+    setLoading(true);/* Button will show Circlular Progress */
     setTimeout(() => setLoading(false), 500);
     setTimeout(() => setOpen(true), 500);
   };
-
-  useEffect(() => {
-    // if (products.length < 1) {
-    //   router.push("/collections");
-    // } else {
-    //   Client.buildClient({
-    //     domain: "benson-bracelets.myshopify.com",
-    //     storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
-    //   })
-    //     .product.fetchByHandle(handle)
-    //     .then((res) => {
-    //       console.log("Response: ", res);
-    //       setProductData(res);
-    //       setValues({
-    //         ...values,
-    //         name: res.title,
-    //         price: parseInt(res.variants[0].price),
-    //         src: res.images[0].src,
-    //       });
-    //     });
-    // }
-  }, [handle]);
 
   if (!props.product.title)
     return (
@@ -210,7 +186,7 @@ function Product(props: any) {
   return (
     <div>
       {console.log(
-        "GetStaticProps ProductData in [product].tsx: ",
+        "GetStaticProps props.product in [slug].tsx: ",
         props.product
       )}
       <div style={{ position: "relative" }}>
@@ -228,9 +204,12 @@ function Product(props: any) {
           transition={props.pageAnimations.transition}
         >
           <CartSummaryModal
+            title={props.product.title}
+            image={props.product.images[0].src}
+            quantity={values.quantity}
+            price={props.product.variants[0].price}
             setValue={props.setValue}
             anchorEl={anchorEl}
-            item={values}
             open={open}
             setOpen={setOpen}
             clearValues={clearValues}
@@ -288,7 +267,7 @@ function Product(props: any) {
                         setLoading={setLoading}
                         loading={loading}
                         loadCartSummary={loadCartSummary}
-                        productData={productData}
+                        productData={props.product}
                         values={values}
                       />
                     </Grid>

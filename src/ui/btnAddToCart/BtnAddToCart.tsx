@@ -2,14 +2,11 @@ import Button from "@material-ui/core/Button/Button";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import Icon from "@material-ui/core/Icon/Icon";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import theme from "../Theme"
 
 interface Props {
   addItemToCheckout: (
     id: string,
-    quantity: string,
-    size: string,
-    variantName: any
+    quantity: string
   ) => void;
   onAddToCart: (values: any) => void;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,12 +37,10 @@ export default function BtnAddToCart(props: Props) {
       }
       onClick={(e: any) => {
         props.onAddToCart(props.values);
-        // props.addItemToCheckout(/*ShopContext*/
-        //   props.productData.variants[0].id.toString(),
-        //   props.values.quantity.toString(),
-        //   props.values.size.toString(),
-        //   props.productData.options[1].values[0].value
-        // );
+        props.addItemToCheckout(/*ShopContext*/
+          props.productData.variants[0].id.toString(),
+          props.values.quantity         
+        );
         props.loadCartSummary(e);
       }}
     >
