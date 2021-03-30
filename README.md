@@ -71,6 +71,10 @@ or:
     Why does returning a response
 
 # Plan out Shopping Cart & Shopify Cart
+    Add To Cart in Product's Page
+    X Add a variant-id to addToCart()
+    - Check if variantid is in redux 
+
     From the Shopping Cart Page
     - Update quantity Subtract/Add
     - Remove Item all together

@@ -144,19 +144,22 @@ function Product(props: Props) {
    *  @returns {void}
    */
   const onAddToCart = (newItem: ICartItems) => {
-    newItem = {
+    const item = {
       ...newItem,
-      id: props.product.id
-       
+      id: props.product.id,
+      name: props.product.title,
+      price: props.product.variants[0].price,
+      src: props.product.images[0].src,
     };
-    /*Pull all current ids in cartItems*/
-    const ids = props.cartItems.map((item: any) => item.id);
+  
+    /*Pull all current ids in cartItems into 'const ids' */
+    const ids = props.cartItems.map((cartItem: any) => cartItem.id);
 
     /*Add quantities through dispatch(addQty) only if ids match, 
     if not then dispatch(addToCart) for a new item with a different size */
-    ids.includes(newItem.id)
-      ? dispatch(addQuantityToItem(newItem))
-      : dispatch(addToCart(newItem));
+    ids.includes(item.id)
+      ? dispatch(addQuantityToItem(item))
+      : dispatch(addToCart(item));
   };
 
   /* Clears values in the options */

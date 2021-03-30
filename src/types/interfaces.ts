@@ -23,7 +23,7 @@ export interface ICartItems {
       name: string
       quantity: number
       size: number
-      price: number
+      price: string | number
       src: string
-      id: any
+      id: string | number
 }[]

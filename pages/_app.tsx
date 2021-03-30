@@ -8,19 +8,21 @@ import { useRouter } from 'next/router'
 import Header from "../src/ui/header/Header";
 import { AnimatePresence } from "framer-motion";
 import { Provider } from "react-redux";
-import store from "../src/store/store";
+// import store from "../src/store/store";
 import ScrollToTop from "../src/ui/scrolltotop/ScrollToTop";
 // import { bracelets } from "../src/data/data";
 import { easeInOutCubic } from "../src/utils/Easing";
 import jump from "jump.js";
 import ShopContext from '../src/components/context/ShopContext'
 
+import { wrapper } from '../src/store/store'
+
 export const parsePrice = (price: number) => {
   return parseFloat(price.toFixed(2));
 };
 
 // Inserted Above
-export default function MyApp(props: AppProps) {
+ function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
   //Inserted Below
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -46,7 +48,7 @@ export default function MyApp(props: AppProps) {
 
   return (
     <React.Fragment>
-      <Provider store={store}>
+      {/* <Provider store={store}> */}
         <ScrollToTop />
         <ThemeProvider theme={Theme}>
         <ShopContext>
@@ -70,8 +72,9 @@ export default function MyApp(props: AppProps) {
           </FramerMotionProvider>
           </ShopContext>
         </ThemeProvider>
-      </Provider>
+      {/* </Provider> */}
     </React.Fragment>
   );
 }
 
+export default wrapper.withRedux(MyApp)
