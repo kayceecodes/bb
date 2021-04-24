@@ -1,11 +1,11 @@
 import { Variants, Transition } from "framer-motion"
 
-export interface IPageAnimations {
+export interface PageAnimations {
   variants: Variants
   transition: Transition
 }
 
-export interface IMotions {
+export interface Motions {
   initial: string
   animate: string
   exit: string

@@ -1,12 +1,12 @@
 import { FunctionComponent, ReactElement } from 'react'
-import { IMotions } from '../../types/interfaces';
+import { Motions } from '../../types/interfaces';
 
 interface Props {
     children: FunctionComponent<any>
 }
 
 const FramerMotionProvider = ({ children }: Props) => {
-    const styleProps:any | IMotions = {
+    const styleProps:any | Motions = {
         pageStyle: {
             position: "absolute",
             width: "100%",

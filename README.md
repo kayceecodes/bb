@@ -61,25 +61,25 @@ or:
     19. Remove product, products from useContext [slug].tsx
     20. Adjust
     21. Clear values need to ONLY REMOVE quantity and sizes!
-
+    22. Shoppingcart.tsx Alert if user really wants to clear item from cart
 # Questions
     Pro/Cons & Difference between Link href and router.push
-        SE see's html
-        router isn't shown
-        router.push is great for re enforcement
+        - SE see's html
+        - router isn't shown
+        - router.push is great for re enforcement
     Refs Advantages over Props.
-    Why does returning a response
+    RTL built in Nextjs 
+        - It's not.
 
 # Plan out Shopping Cart & Shopify Cart
     Add To Cart in Product's Page
     X Add a variant-id to addToCart()
-    - Check if variantid is in redux 
+    X Check if variantid is in redux 
 
     From the Shopping Cart Page
     - Update quantity Subtract/Add
     - Remove Item all together
 
     Redux Cart
-    - check-id in redux
+    - checkout-id in redux
     - 
-

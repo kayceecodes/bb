@@ -10,7 +10,7 @@ import { ShopContext } from "../../components/context/ShopContext";
 import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
 import useTheme from "@material-ui/core/styles/useTheme";
 import router from "next/router";
-import ContainItems from "../grid/ContainItems";
+import Container from "../grid/Container";
 import RoundWideUnderline from "../underline/RoundWideUnderline";
 import { CircularProgress } from "@material-ui/core";
 
@@ -109,7 +109,7 @@ export default function FeaturedProducts(props: Props) {
 
         <RoundWideUnderline />
       </div>
-      <ContainItems
+      <Container
         xs={10}
         md={4}
         justify="space-around"
@@ -148,7 +148,7 @@ export default function FeaturedProducts(props: Props) {
             </React.Fragment>
           )
         )}
-      </ContainItems>
+      </Container>
     </>
   );
 }

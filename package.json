@@ -38,6 +38,9 @@
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/user-event": "^13.1.5",
     "@types/next": "latest",
     "@types/node": "latest",
     "@types/react": "latest",

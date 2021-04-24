@@ -44,11 +44,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0px 0px 8px 10px #efefef99",
     height: "130px",
     position: "relative",
-    maxWidth: "600px",
+    width: "340px",
     margin: "10px auto 25px",
+    padding: "0px 8px",
     backgroundColor: "white",
-    [theme.breakpoints.up("md")]: {
-      maxWidth: "750px",
+    [theme.breakpoints.up("sm")]: {
+      width: "580px",
     },
   },
   cartItemImgContainer: {
@@ -64,11 +65,11 @@ const useStyles = makeStyles((theme) => ({
     margin: "0px 2px",
     boxShadow: "0px 0px 8px rgba(0,0,0,0.05)",
     color: `${theme.palette.common.slateTan}`,
-    minWidth: '50px',
+    minWidth: '40px',
     [theme.breakpoints.up("xs")]: {
-      width: "62px",
+      width: "40px",
     },
-    [theme.breakpoints.up("lg")]: {
+    [theme.breakpoints.up("sm")]: {
       width: "65px",
     },
     
@@ -80,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "0.75rem",
     fontFamily: "Roboto",
     lineHeight: 1.55,
+    marginTop: '8px',
     [theme.breakpoints.up("sm")]: {
       fontSize: "0.85rem",
     },

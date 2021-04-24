@@ -3,7 +3,7 @@ import Link from "../src/Link";
 
 import { motion } from "framer-motion";
 
-import { IPageAnimations, IMotions } from "../src/types/interfaces";
+import { PageAnimations, Motions } from "../src/types/interfaces";
 
 import { Parallax } from "react-parallax";
 
@@ -29,8 +29,8 @@ interface IProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
   setSelectedIndex: (value: number) => void;
   pageStyle: CSSProperties;
-  pageAnimations: IPageAnimations;
-  motions: IMotions;
+  pageAnimations: PageAnimations;
+  motions: Motions;
   jumpTo: (jumpingTarget: string | number | Element) => void;
 }
 

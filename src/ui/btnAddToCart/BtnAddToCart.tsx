@@ -52,5 +52,3 @@ export default function BtnAddToCart(props: Props) {
     </Button>
   );
 }
-// apply, call, bind, prototype
-// 

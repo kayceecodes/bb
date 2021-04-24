@@ -11,8 +11,8 @@ import { motion } from "framer-motion";
 import Typography from "@material-ui/core/Typography";
 
 import {
-  IPageAnimations,
-  IMotions,
+  PageAnimations,
+  Motions,
   IBraceletData,
 } from "../src/types/interfaces";
 import Grid from "@material-ui/core/Grid/Grid";
@@ -39,8 +39,8 @@ export interface IProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   pageStyle: CSSProperties;
-  pageAnimations: IPageAnimations;
-  motions: IMotions;
+  pageAnimations: PageAnimations;
+  motions: Motions;
   jumpTo: (jumpingTarget: string | number | Element) => void;
   products: any
 }

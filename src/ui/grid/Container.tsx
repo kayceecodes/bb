@@ -37,7 +37,7 @@ interface Styles {
 
 type Props = Item & Container & HtmlHTMLAttributes<any> & Styles;
 
-export default function ContainItems(props: Partial<Props>) {
+export default function Container(props: Partial<Props>) {
   return (
     <Grid
       container

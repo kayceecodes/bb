@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 
-import { MotionStyle } from "framer-motion";
+import { motion, MotionStyle } from "framer-motion";
 
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
+import useTheme from "@material-ui/core/styles/useTheme";
 
-import { PageAnimations, Motions, ICartItems } from "../src/types/interfaces";
+import { IPageAnimations, IMotions, ICartItems } from "../src/types/interfaces";
 import Item from "../src/components/shoppingcart/item/Item";
 
 import { ICart } from "../src/store/reducers/cart_reducer";
@@ -15,14 +17,10 @@ import Button from "@material-ui/core/Button/Button";
 import Link from "../src/Link";
 import { ShopContext } from "../src/components/context/ShopContext";
 
-import MotionDiv from "../src/ui/hoc/MotionDiv";
-import Container from "../src/ui/grid/Container";
-import { getTotalItems } from "../src/utils/Math";
-
 interface IProps {
   pageStyle: MotionStyle;
-  pageAnimations: PageAnimations;
-  motions: Motions;
+  pageAnimations: IPageAnimations;
+  motions: IMotions;
   cartItems: ICartItems[];
   cartTotal: number;
 }
@@ -30,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   root: {},
   sectionMargin: {
     [theme.breakpoints.up("sm")]: {
-      marginTop: "125px",
+      marginTop: "60px",
     },
     [theme.breakpoints.down("sm")]: {
       margin: "35px",
@@ -55,24 +53,26 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   totalItems: {
+    textAlign: "left",
     fontFamily: "Nunito",
-    color: "#36445c",
-    borderBottom: "2px solid #ffa225",
-    padding: "20px 70px 30px",
+    color: "rgba(54, 68, 92, 1)",
   },
-  itemsList: {
+  scrollOverflow: {
     overflow: "auto",
     height: "350px",
-    minWidth: "350px",
     marginTop: "20px",
     marginBottom: "60px",
     paddingRight: "10px",
     paddingLeft: "10px",
-    textAlign: "center",
     border: `1px solid ${theme.palette.common.dimegray}10`,
     backgroundColor: theme.palette.common.offWhite,
     borderRadius: "4px",
     boxShadow: "0px 0px 15px rgba(0,0,0,0.1)",
+  },
+  absolutePos: {
+    position: "absolute",
+    right: "30px",
+    top: 0,
   },
   bottomBorder: {
     marginTop: "25px",
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
 const ItemsList = (props: any) => {
   const classes = useStyles();
   return (
-    <div className={classes.itemsList}>
+    <div className={classes.scrollOverflow}>
       {props.cartItems.length > 0 ? (
         props.cartItems.map((item: ICartItems, index: number) => (
           <Item
@@ -115,63 +115,106 @@ const ItemsList = (props: any) => {
             src={item.src}
             id={item.id}
           />
-        ))
-      ) : (
-        <span style={{ fontFamily: "Nunito", color: "#36445c" }}>
-          Your Cart Is Empty
-        </span>
-      )}
+        ))) : <span className={classes.totalItems}>Your Cart Is Empty</span>}
     </div>
   );
 };
 
-const Stats = (props: any) => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.totalItems}>
-      {"Cart Total: $" + props.cartTotal.toFixed(2)}
-      <br />
-      {"Total Items in Cart: " + getTotalItems(props.cartItems) + " items"}
-    </div>
-  );
-};
-
+const Stats = (props: any) => (
+  <>
+    {"Cart Total: $" + props.cartTotal.toFixed(2)}
+    <br />
+    {"Total Items in Cart: "}
+    <span data-testid="cart-total-qty">{props.numberOfItems}</span>
+    {" items"}
+  </>
+);
 const Shoppingcart = (props: IProps) => {
   const { checkout } = useContext<any>(ShopContext);
   const classes = useStyles();
+  const theme = useTheme();
+  let [numberOfItems, setNumberOfItems] = useState(0);
+  const matches = {
+    sm: useMediaQuery(theme.breakpoints.up("sm")),
+    md: useMediaQuery(theme.breakpoints.up("md")),
+    lg: useMediaQuery(theme.breakpoints.up("lg")),
+    xl: useMediaQuery(theme.breakpoints.up("xl")),
+  }; // If query matches sm,md,lg or xl then we'll use the 'matches' object to change styles
+
+  const getQtyTotal = () => {
+    numberOfItems = 0;
+
+    for (let obj of props.cartItems) {
+      numberOfItems += obj.quantity;
+    }
+    setNumberOfItems(numberOfItems);
+  };
+
+  useEffect(() => {
+    getQtyTotal();
+  });
 
   return (
-    <MotionDiv pageAnimations={props.pageAnimations}>
+    <motion.div
+      className={matches.md ? classes.heightOfContainer : ""}
+      style={props.pageStyle}
+      initial={props.motions.initial}
+      animate={props.motions.animate}
+      exit={props.motions.exit}
+      variants={props.pageAnimations.variants}
+      transition={props.pageAnimations.transition}
+    >
       <div className={classes.sectionMargin} />
       <Grid container justify="center" className={classes.header}>
         <Typography variant="h2">Cart</Typography>
       </Grid>
+      <div className={classes.sectionMargin} />
 
-      <div className={classes.shoppingcartContainer}>
-        <Container
-          direction="column"
-          justify="space-around"
-          alignItems="center"
-          spacing={4}
-          xs={12}
-        >
-            <Stats cartTotal={props.cartTotal} cartItems={props.cartItems} />
-            <ItemsList
-              cartItems={props.cartItems}
-              getQtyTotal={getTotalItems}
-            />
-            <Button
-              disabled={props.cartTotal === 0}
-              component={Link}
-              href={checkout.webUrl ? checkout.webUrl : "/"}
-              className={classes.checkoutBtn}
+      <Grid
+        container
+        justify="space-around"
+        alignItems="flex-start"
+        className={classes.shoppingcartContainer}
+        style={{ position: "relative" }}
+      >
+        <Grid item xs={12} md={6}>
+          <Grid
+            container
+            direction="column"
+            justify="space-around"
+            alignItems="center"
+            spacing={4}
+          >
+            <Grid
+              item
+              className={classes.totalItems}
+              style={{ textAlign: "left" }}
             >
-              Continue To Checkout
-            </Button>
-        </Container>
-      </div>
-    </MotionDiv>
+              <Stats
+                cartTotal={props.cartTotal}
+                numberOfItems={numberOfItems}
+              />
+            </Grid>
+            <div className={classes.bottomBorder} />
+            <Grid item xs={12} style={{ width: "100%" }}>
+              <ItemsList
+                cartItems={props.cartItems}
+                getQtyTotal={getQtyTotal}
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                component={Link}
+                href={checkout.webUrl ? checkout.webUrl : "/"}
+                className={classes.checkoutBtn}
+              >
+                Continue To Checkout
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </motion.div>
   );
 };
 

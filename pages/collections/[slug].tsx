@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 
 import {
   IBraceletData,
-  IPageAnimations,
-  IMotions,
+  PageAnimations,
+  Motions,
   ICartItems,
 } from "../../src/types/interfaces";
 import { MouseEvent } from "../../src/types/aliases"; // TYPE - Events
@@ -70,8 +70,8 @@ interface IDisplayItemProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
   setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   pageStyle: CSSProperties;
-  pageAnimations: IPageAnimations;
-  motions: IMotions;
+  pageAnimations: PageAnimations;
+  motions: Motions;
   addToCart?: (cartItems: ICartItems) => any;
 }
 
@@ -258,7 +258,7 @@ function Product(props: Props) {
                         handleChange={handleChange}
                         inputType="quantity"
                       />
-                    </Grid>
+                    </Grid>                  
                     {/* SHOPPING CART - BTN - ADD TO CART FUNCTION
                       ADDS CART ITEMS TO REDUCER
                   */}
