@@ -19,7 +19,7 @@ interface State {
   productHandle: string;
 }
 
-export class ShopPrivder extends Component {
+export class ShopProvider extends Component {
   state: State = {
     product: {},
     products: [],
@@ -40,7 +40,7 @@ export class ShopPrivder extends Component {
   /**
    *  Local storage will hold the  checkoutid.
    *  Shopify will handle the check eachtime a checkout is started.
-   * @memberOf ShopPrivder
+   * @memberOf ShopProvider
    */
   createCheckout = async () => {
     const checkout = await client.checkout.create();
@@ -50,7 +50,7 @@ export class ShopPrivder extends Component {
 
   /**
    * Fetch stored checkout from localStorage
-   * @memberOf ShopPrivder
+   * @memberOf ShopProvider
    */
   fetchCheckout = (checkoutId: any) => {
     client.checkout
@@ -68,10 +68,7 @@ export class ShopPrivder extends Component {
    * @param quantity
    * @param size
    */
-  addItemToCheckout = async (
-    variantId: string,
-    quantity: number
-  ) => {
+  addItemToCheckout = async (variantId: string, quantity: number) => {
     const lineItemsToAdd = [
       {
         variantId,
@@ -97,18 +94,20 @@ export class ShopPrivder extends Component {
       });
   };
 
-  updateProductQuantity = ( variantId: string, quantity: number) => {
+  updateQuantity = async (variantId: string, quantity: number) => {
     const checkoutId = localStorage.checkout_id; // ID of an existing checkout
-
-    const lineItemsToUpdate = [
-      {id: variantId, quantity: quantity}
-    ];
-    
-    // Update the line item on the checkout (change the quantity or variant)
-    client.checkout.updateLineItems(checkoutId, lineItemsToUpdate).then((checkout) => {
-      // Do something with the updated checkout
-      console.log(checkout.lineItems); // Quantity of line item 'Z2lkOi8vc2h...' updated to 2
-    });
+    const lineItemsToUpdate = [{ id: variantId, quantity: quantity }];
+    if (checkoutId && variantId) {
+      // Update the line item on the checkout (change the quantity or variant)
+      await client.checkout
+        .updateLineItems(checkoutId, lineItemsToUpdate)
+        .then((checkout) => {
+          console.log(checkout.lineItems); // Quantity of line item 'Z2lkOi8vc2h...' updated to 2
+        });
+    } else {
+      console.log('Error in update Quantity')
+      throw('Error: Update Quantity, missing checkoutId or variantId')
+    }
   };
 
   fetchAllProducts = async () => {
@@ -153,9 +152,9 @@ export class ShopPrivder extends Component {
           setHandle: this.setHandle,
           addItemToCheckout: this.addItemToCheckout,
           removeLineItem: this.removeLineItem,
+          updateQuantity: this.updateQuantity,
           closeCart: this.closeCart,
           openCart: this.openCart,
-
           closeMenu: this.closeMenu,
           openMenu: this.openMenu,
         }}
@@ -170,4 +169,4 @@ const ShopConsumer = ShopContext.Consumer;
 
 export { ShopConsumer, ShopContext };
 
-export default ShopPrivder;
+export default ShopProvider;

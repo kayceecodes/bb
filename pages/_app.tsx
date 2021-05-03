@@ -7,7 +7,6 @@ import FramerMotionProvider from "../src/ui/hoc/FramerMotionProvider";
 import { useRouter } from 'next/router'
 import Header from "../src/ui/header/Header";
 import { AnimatePresence } from "framer-motion";
-import { Provider } from "react-redux";
 // import store from "../src/store/store";
 import ScrollToTop from "../src/ui/scrolltotop/ScrollToTop";
 // import { bracelets } from "../src/data/data";

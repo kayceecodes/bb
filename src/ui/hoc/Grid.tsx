@@ -21,6 +21,7 @@ interface Container {
   wrap: GridWrap;
   zeroMinWidth: boolean;
   children: ReactNode[];
+  matches: number[]
 }
 
 interface Item {
@@ -49,7 +50,7 @@ export default function Container(props: Partial<Props>) {
       wrap={props.wrap as GridWrap}
       style={{ width: props.width, margin: props.margin }}
     >
-      {props.children?.map((item, index) => (
+      {props.children?.map((child, index) => (
         <Grid
           key={index}
           item
@@ -59,7 +60,7 @@ export default function Container(props: Partial<Props>) {
           lg={props.lg as GridSize}
           zeroMinWidth={props.zeroMinWidth ?? false}
         >
-          {item}
+          {child}
         </Grid>
       ))}
     </Grid>

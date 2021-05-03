@@ -10,9 +10,10 @@ import { ShopContext } from "../../components/context/ShopContext";
 import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
 import useTheme from "@material-ui/core/styles/useTheme";
 import router from "next/router";
-import Container from "../grid/Container";
+import Container from "../hoc/Grid";
 import RoundWideUnderline from "../underline/RoundWideUnderline";
 import { CircularProgress } from "@material-ui/core";
+import TitleHeader from "../titleHeader/TitleHeader";
 
 interface Props {
   setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
       marginTop: "100px",
     },
   },
-  centering: {
+  m_auto: {
     margin: "0 auto",
   },
   featuredName: {
@@ -98,17 +99,7 @@ export default function FeaturedProducts(props: Props) {
 
   return (
     <>
-      <div className={classes.centering}>
-        <Typography
-          component="h2"
-          variant="h2"
-          data-aos="fade-left"
-        >
-          Featured Bracelets
-        </Typography>
-
-        <RoundWideUnderline />
-      </div>
+      <TitleHeader header="Featured Bracelets" aos='fade-right' />
       <Container
         xs={10}
         md={4}

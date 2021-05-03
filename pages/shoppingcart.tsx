@@ -1,10 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { connect } from "react-redux";
 
-import { MotionStyle } from "framer-motion";
-
-import Grid from "@material-ui/core/Grid/Grid";
-import Typography from "@material-ui/core/Typography/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 import { PageAnimations, Motions, ICartItems } from "../src/types/interfaces";
@@ -13,38 +9,31 @@ import Item from "../src/components/shoppingcart/item/Item";
 import { ICart } from "../src/store/reducers/cart_reducer";
 import Button from "@material-ui/core/Button/Button";
 import Link from "../src/Link";
+
+import PageTransition from "../src/ui/hoc/PageTransition";
+import Grid from "../src/ui/hoc/Grid";
+import { calcTotal, countTotalItems } from "../src/utils/Math";
+import { CSSProperties } from "@material-ui/styles";
+import TitleHeader from "../src/ui/titleHeader/TitleHeader";
+
 import { ShopContext } from "../src/components/context/ShopContext";
 
-import MotionDiv from "../src/ui/hoc/MotionDiv";
-import Container from "../src/ui/grid/Container";
-import { getTotalItems } from "../src/utils/Math";
-
 interface IProps {
-  pageStyle: MotionStyle;
+  pageStyle: CSSProperties;
   pageAnimations: PageAnimations;
   motions: Motions;
   cartItems: ICartItems[];
   cartTotal: number;
 }
 const useStyles = makeStyles((theme) => ({
-  root: {},
-  sectionMargin: {
-    [theme.breakpoints.up("sm")]: {
-      marginTop: "125px",
-    },
-    [theme.breakpoints.down("sm")]: {
-      margin: "35px",
-    },
-  },
-  heightOfContainer: {
-    height: "100%",
-  },
   header: {
-    borderBottom: `3px solid ${theme.palette.common.antiqueWhite}`,
     padding: "0px 30px 5px",
     width: "100px",
     textAlign: "center",
-    margin: "0 auto 70px",
+    margin: "40px auto",
+    [theme.breakpoints.up("lg")]: {
+      margin: "75px auto 40px",
+    },
   },
   shoppingcartContainer: {
     width: "95%",
@@ -69,19 +58,10 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "10px",
     paddingLeft: "10px",
     textAlign: "center",
-    border: `1px solid ${theme.palette.common.dimegray}10`,
+    border: `0.5px solid ${theme.palette.common.slateTan}99`,
     backgroundColor: theme.palette.common.offWhite,
     borderRadius: "4px",
-    boxShadow: "0px 0px 15px rgba(0,0,0,0.1)",
-  },
-  bottomBorder: {
-    marginTop: "25px",
-    border: `0.5px solid ${theme.palette.common.orange}`,
-    width: "280px",
-    margin: "0 auto",
-    [theme.breakpoints.up("sm")]: {
-      width: "450px",
-    },
+    boxShadow: "0px 0px 8px rgba(0,0,0,0.07)",
   },
   checkoutBtn: {
     color: theme.palette.common.dimGray,
@@ -96,31 +76,32 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.orange,
     },
   },
+  text: {
+    fontFamily: "Nunito",
+    color: "#36445c"
+  }
 }));
 
 /* Container with hidden overflow for items in cart */
 const ItemsList = (props: any) => {
   const classes = useStyles();
+  
   return (
     <div className={classes.itemsList}>
-      {props.cartItems.length > 0 ? (
-        props.cartItems.map((item: ICartItems, index: number) => (
+      {props.lineItems?.length > 0 ? (
+        props.lineItems.map((item: any, index: number) => (
           <Item
-            key={item.name + item.size + index}
-            getQtyTotal={props.getQtyTotal}
-            name={item.name}
+            key={item.title + item.size + index}
+            countTotalItems={props.countTotalItems}
+            name={item.title}
             quantity={item.quantity}
-            size={item.size}
-            price={item.price}
-            src={item.src}
+            size={item.variant.title.split(' /')[0]}
+            price={item.variant.price}
+            src={item.variant.image.src}
             id={item.id}
           />
         ))
-      ) : (
-        <span style={{ fontFamily: "Nunito", color: "#36445c" }}>
-          Your Cart Is Empty
-        </span>
-      )}
+      ) : <span className={classes.text}>Your Cart Is Empty</span>}
     </div>
   );
 };
@@ -130,48 +111,44 @@ const Stats = (props: any) => {
 
   return (
     <div className={classes.totalItems}>
-      {"Cart Total: $" + props.cartTotal.toFixed(2)}
+      {"Cart Total: $" + calcTotal(props.lineItems)}
       <br />
-      {"Total Items in Cart: " + getTotalItems(props.cartItems) + " items"}
+      {"Total Items in Cart: " + countTotalItems(props.lineItems) + " items"}
     </div>
   );
 };
 
-const Shoppingcart = (props: IProps) => {
+function Shoppingcart (props: IProps): React.ReactElement {
   const { checkout } = useContext<any>(ShopContext);
   const classes = useStyles();
 
   return (
-    <MotionDiv pageAnimations={props.pageAnimations}>
-      <div className={classes.sectionMargin} />
-      <Grid container justify="center" className={classes.header}>
-        <Typography variant="h2">Cart</Typography>
-      </Grid>
-
-      <div className={classes.shoppingcartContainer}>
-        <Container
+    <PageTransition pageStyle={props.pageStyle} pageAnimations={props.pageAnimations}>
+      <div className={classes.header}>
+      <TitleHeader header='Cart' />
+      </div>
+        <Grid
           direction="column"
           justify="space-around"
           alignItems="center"
-          spacing={4}
-          xs={12}
-        >
-            <Stats cartTotal={props.cartTotal} cartItems={props.cartItems} />
+          xs={12}>
+            <Stats 
+            lineItems={checkout.lineItems}
+             />
             <ItemsList
-              cartItems={props.cartItems}
-              getQtyTotal={getTotalItems}
+              lineItems={checkout.lineItems}
+              countTotalItems={countTotalItems}
             />
             <Button
-              disabled={props.cartTotal === 0}
+              disabled={checkout.lineItems === 0}
               component={Link}
               href={checkout.webUrl ? checkout.webUrl : "/"}
               className={classes.checkoutBtn}
             >
               Continue To Checkout
             </Button>
-        </Container>
-      </div>
-    </MotionDiv>
+        </Grid>
+    </PageTransition>
   );
 };
 

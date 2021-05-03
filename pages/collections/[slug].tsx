@@ -58,7 +58,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   .product.fetchByHandle(params?.slug as string)
   .then((res) => res)
   
-  console.log('GetstaticProps - Productproduct', product)
   return {
     props: {
       product: JSON.parse(JSON.stringify(product)),
@@ -188,10 +187,6 @@ function Product(props: Props) {
     );
   return (
     <div>
-      {console.log(
-        "GetStaticProps props.product in [slug].tsx: ",
-        props.product
-      )}
       <div style={{ position: "relative" }}>
         <motion.div
           style={{

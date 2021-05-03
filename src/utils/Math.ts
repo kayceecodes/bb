@@ -1,10 +1,17 @@
-import { ICartItems } from "../types/interfaces";
 
-export const getTotalItems = (cartItems: ICartItems[]) => {
-    let totalItemsInCart = 0;
-  
-    for (let item in cartItems) {
-      totalItemsInCart += cartItems[item].quantity;
-    }
-    return totalItemsInCart;
-  };
+export const calcTotal = (lineItems: any) => {
+  let cartTotal = 0
+
+  lineItems?.forEach((item: any) => 
+  {cartTotal = (Number(item.variant.price) * item.quantity) + cartTotal})
+
+  return cartTotal.toFixed(2)
+}
+
+export const countTotalItems = (lineItems: any) => {
+  let totalItems = 0;
+
+  lineItems?.forEach((item: any) => totalItems = item.quantity + totalItems)
+
+  return totalItems > 0 ? totalItems : 'Empty';
+};  

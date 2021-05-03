@@ -1,16 +1,19 @@
 import { motion } from "framer-motion";
 import React, { ReactNode } from "react";
+import { CSSProperties } from "react";
 import { PageAnimations } from "../../types/interfaces";
 
 interface Props {
-  pageAnimations: PageAnimations;
-  children: ReactNode;
+  pageAnimations: PageAnimations
+  pageStyle: CSSProperties
+  children: ReactNode
 }
 
-export default function MotionDiv(props: Props) {
+export default function PageTransition(props: Props) {
   return (
     <motion.div
-      initial="out"
+      style={props.pageStyle}
+      initial="initial"
       animate="in"
       exit="out"
       variants={props.pageAnimations.variants}

@@ -1,25 +1,15 @@
 import React, { CSSProperties } from "react";
 import { motion } from "framer-motion";
-import { IPageAnimations, IMotions } from "../src/types/interfaces";
+import { PageAnimations, Motions } from "../src/types/interfaces";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import TitleHeader from "../src/ui/titleHeader/TitleHeader";
 
 interface IProps {
-  // value: number,
-  // setValue: React.Dispatch<React.SetStateAction<number>>;
-  // selectedIndex: number,
-  // setSelectedIndex: (value: number) => void;
-  // routes: IRoute[],
-  // anchorEl?: HTMLElement,
-  // openMenu: boolean,
-  // menuOptions: IMenuOption[],
-  // handleClose: () => void,
-  // handleMenuItemClick:  (e: MouseEvent, i: number) => void,
-  // handleChange: () => any,
   pageStyle: CSSProperties;
-  pageAnimations: IPageAnimations;
-  motions: IMotions;
+  pageAnimations: PageAnimations;
+  motions: Motions;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     padding: '0px 13px 10px',
     borderBottom: `3px solid ${theme.palette.common.antiqueWhite}`
   },
-  root: {},
 }));
 
 export default function Contact(props: IProps) {
@@ -55,12 +44,12 @@ export default function Contact(props: IProps) {
       <Grid container direction="column" alignContent='center'>
         <Grid item xs={10} md={6} xl={10}>
           <Grid container direction="column" alignContent='space-between' spacing={3}>
-            <Grid item xs={12}>
+            <Grid item xs={5} md={12}>
               <Grid container>
-                <Typography variant="h2"><div className={classes.headersUnderline}>Reach Us</div></Typography>
+                <TitleHeader header='Reach Us' />
               </Grid>
             </Grid>
-            <Grid item xs={12} style={{ textAlign: "left" }}>
+            <Grid item xs={8} md={12} style={{ textAlign: "left" }}>
               <Grid container direction="row" spacing={5}>
                 <Grid item >
                   <Grid container direction="column" alignContent="flex-start" spacing={1}>

@@ -19,7 +19,6 @@ import Grid from "@material-ui/core/Grid/Grid";
 
 import Aos from "aos";
 import "aos/dist/aos.css";
-
 import BraceletCard from "../src/components/collections/braceletcard/BraceletCard";
 import Hidden from "@material-ui/core/Hidden/Hidden";
 
@@ -34,6 +33,7 @@ import { ShopContext } from "../src/components/context/ShopContext";
 
 import Client, { Product } from "shopify-buy";
 import { useRouter } from "next/router";
+import TitleHeader from "../src/ui/titleHeader/TitleHeader";
 
 export interface IProps {
   setValue: React.Dispatch<React.SetStateAction<number>>;
@@ -42,27 +42,25 @@ export interface IProps {
   pageAnimations: PageAnimations;
   motions: Motions;
   jumpTo: (jumpingTarget: string | number | Element) => void;
-  products: any
+  products: any;
 }
 
 export async function getStaticProps() {
-
   let products = await Client.buildClient({
     domain: "benson-bracelets.myshopify.com",
-    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2"
+    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
   })
-  .product.fetchAll().then((products) => {
-    console.log('Products in getStaticProps: ', products)
-    
-    return products 
-  })
-  .catch((err) => {
-    console.log('Error Message: ', err)
-  })
+    .product.fetchAll()
+    .then((products) => {
+      return products;
+    })
+    .catch((err) => {
+      console.log("Error Message: ", err);
+    });
 
   return {
     props: {
-      products: JSON.parse(JSON.stringify(products))
+      products: JSON.parse(JSON.stringify(products)),
     },
   };
 }
@@ -120,7 +118,7 @@ export function Collections(props: IProps) {
       title: product.title,
       price: product.variants[0].price,
       src: product.images[0].src,
-      category: product.options[1].values[0].value
+      category: product.options[1].values[0].value,
     };
   });
 
@@ -139,9 +137,11 @@ export function Collections(props: IProps) {
     Client.buildClient({
       domain: "benson-bracelets.myshopify.com",
       storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
-    }).product.fetchAll().then((data) => {
-      console.log('Data object: ', data)
     })
+      .product.fetchAll()
+      .then((data) => {
+        console.log("Data object: ", data);
+      });
     Aos.init({
       duration: 900,
     }); /*This is for a css effect when element appears, fades into dom */
@@ -149,11 +149,10 @@ export function Collections(props: IProps) {
 
   const scrollEvent = (event: SyntheticEvent) => {
     const target = event.target as HTMLTextAreaElement;
-    console.log("Current Scroll Position: ", target.scrollTop);
+    // console.log("Current Scroll Position: ", target.scrollTop);
   };
 
   useScrollPosition(({ prevPos, currPos }) => {
-
     let revealedPosition = 0;
     revealedPosition = matches.md ? 750 : 0;
     if (-currPos.y >= revealedPosition) {
@@ -165,8 +164,8 @@ export function Collections(props: IProps) {
 
   return (
     <>
-    {console.log('Products in collections.tsx: ', products)}
-    {console.log('GetStaticProps - Props.products in collections.tsx: ', props.products)}
+      {/* {console.log('Products in collections.tsx: ', products)}
+    {console.log('GetStaticProps - Props.products in collections.tsx: ', props.products)} */}
       <div onScroll={scrollEvent}>
         <motion.div
           style={props.pageStyle}
@@ -188,9 +187,7 @@ export function Collections(props: IProps) {
             alignItems="center"
           >
             <Grid item>
-              <Typography component="h2" variant="h2">
-                <div className={classes.headersUnderline}>Collections</div>
-              </Typography>
+              <TitleHeader header="Collections" />
             </Grid>
             <Hidden smDown>
               <div className={classes.sectionMargin} />

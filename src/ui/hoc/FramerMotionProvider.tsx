@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement } from 'react'
+import { FunctionComponent } from 'react'
 import { Motions } from '../../types/interfaces';
 
 interface Props {
