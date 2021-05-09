@@ -14,6 +14,8 @@ interface Props {
   };
   handleChange: (prop: keyof ICartItems, event: any) => void;
   inputType: string;
+  product: any,
+  setVariantId: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +38,22 @@ export default function ProductInput(props: Props) {
   let QuantityMenuItems = [<MenuItem key={'key0'} value={0}>0 - 10</MenuItem>];
   let SizeMenuItems = [<MenuItem key={'key0'} value={0}>Inches</MenuItem>];
 
-  for (let i = 1; i < 12; i++) {
+  for (let i = 1; i < 11; i++)
     QuantityMenuItems.push(<MenuItem value={i} key={'key' + i}>{i}</MenuItem>);
-    SizeMenuItems.push(<MenuItem value={`${i}"`} key={'key' + i}>{i+'"'}</MenuItem>);
-  }
+
+  // for (let i = 4; i < 10; i++)
+  //   SizeMenuItems.push(<MenuItem value={`${i}"`} key={'key' + i}>{i+'"'}</MenuItem>);
+
+  /* Build SizeMenuItems and the setVariantId once that menuitem is clicked? */
+  props.product?.options[0].values.forEach((element: {value: string, type: any}, index: number) => {
+      SizeMenuItems.push(<MenuItem
+        value={`${element.value}"`}
+        onClick={() => props.setVariantId(props.product?.variants[index].id)}
+        key={element.value}>
+            {`${element.value}"`}
+          </MenuItem>)
+  });
+
   /* Pick what will inputElement be for, Quantities or Sizes */
   switch (props.inputType) {
     case "quantity":

@@ -13,10 +13,8 @@ import {
   removeAllQuantityFromItem,
 } from "../../../store/actions";
 import { fixedTitleLength } from "../../../utils/Parse";
-import { ShopContext } from "../../context/ShopContext";
+import { ShopContext } from "../../../context/ShopContext";
 import SelectQuantity from "../../forms/SelectQuantity";
-import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
-import theme from "../../../ui/Theme";
 
 /**
  * @typedef {Object} ICartCardProps
@@ -25,7 +23,7 @@ import theme from "../../../ui/Theme";
 interface ICartCardProps {
   countTotalItems: () => number;
   // onAddQuantityToItem: ({props, quantity}: any) => void
-  addQuantityToItem?: ({ props, quantity }: any) => void;
+  addQuantityToItem?: ({ props, quantity }: any) => void;  
 }
 
 type Props = ICartCardProps & ICartItems;
@@ -112,27 +110,6 @@ export default function Item(props: Props) {
     setQuantity(event.target.value as number);
   };
 
-  /** Takes an action to add or remove. It dertermines if it should dispatch add one, remove one, or clear item completely.
-   *  Inside of case "remove quantity" it determines if it should remove an item by 1 or clear the item from the cart list
-   * @param editAction
-   */
-  const editQuantity = (editAction: string): void => {
-    switch (editAction) {
-      case "add quantity": {
-        setQuantity(quantity + 1);
-        props.countTotalItems();
-        return;
-      }
-      case "remove quantity": {
-        setQuantity(quantity - 1);
-        props.countTotalItems();
-        return;
-      }
-      default:
-        return;
-    }
-  };
-
   const clearCard = () => {
     dispatch(removeAllQuantityFromItem({ ...props }));
     dispatch(clearIDFromCart({ ...props }));
@@ -141,11 +118,34 @@ export default function Item(props: Props) {
 
   useEffect(() => {
     Aos.init({ duration: 900 });
-    setQuantity(props.quantity);
+      setQuantity(props.quantity);
     console.log('Quantity in "' + props.name + '" is ' + props.quantity + " .");
-  }, [props.quantity]);
+  }, []);
 
-  const setProgress = () => setTimeout(() => setLoading(false), 500);
+  const handleSave = (id: string | number, qty: number) => {
+    updateQuantity(id, qty);
+    setQuantity(qty);
+
+    // if(qty === 0)
+    // props.removeItem(props.lineItems, props.name + props.size)
+    // props.setLineItems(
+    //   props.lineItems.filter((val: any, index: number) => 
+    //           props.index != index
+    //          ))
+  };
+
+  const handleProgress = () => {
+    setLoading(true);
+    /*When its done loading reveal SelectQuantity*/
+   
+    const timedSetLoading = (ms = 500) => new Promise((resolve) => {/*Give timeSetLoading a func signature and promise*/
+      setTimeout(() => {
+        setLoading(false);
+        resolve('Resolved, Loading Stopped');
+      }, ms)
+    })
+    timedSetLoading().then(() => setShowSelect(!showSelect))
+  };
 
   setTimeout(() => setMounted(true), 1000);
 
@@ -223,17 +223,20 @@ export default function Item(props: Props) {
             {showSelect ? (
               <Button
                 onClick={() => {
-                  setShowSelect(!showSelect);
-                  updateQuantity(props.id, Number(quantity));
-                  setQuantity(quantity)
+                  handleProgress();
+                  handleSave(props.id, Number(quantity));
                 }}
               >
                 <Typography variant="caption">
-                  <b>Save</b>
+                  {loading? <CircularProgress size={15} thickness={2} /> : <b>Save</b>}
                 </Typography>
               </Button>
             ) : (
-              <Button onClick={() => {setShowSelect(!showSelect)}}>
+              <Button
+                onClick={() => {
+                  setShowSelect(!showSelect);
+                }}
+              >
                 <Typography variant="caption">
                   <b>Edit</b>
                 </Typography>
@@ -245,7 +248,7 @@ export default function Item(props: Props) {
       <Icon
         className={classes.deleteCard}
         onClick={() => {
-          clearCard();
+          handleSave(props.id, 0);
         }}
         data-testid="remove-item-btn"
       >

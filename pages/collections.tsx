@@ -1,7 +1,5 @@
 import React, {
   CSSProperties,
-  SyntheticEvent,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -29,10 +27,8 @@ import { useScrollPosition } from "@n8tb1t/use-scroll-position";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import FilterSideDrawer from "../src/ui/filterSideDrawer/FilterSideDrawer";
 import FilterCardBtns from "../src/ui/filterCardBtns/FilterCardBtns";
-import { ShopContext } from "../src/components/context/ShopContext";
 
-import Client, { Product } from "shopify-buy";
-import { useRouter } from "next/router";
+import Client from "shopify-buy";
 import TitleHeader from "../src/ui/titleHeader/TitleHeader";
 
 export interface IProps {
@@ -48,10 +44,11 @@ export interface IProps {
 export async function getStaticProps() {
   let products = await Client.buildClient({
     domain: "benson-bracelets.myshopify.com",
-    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+    storefrontAccessToken: process.env.SHOPIFY_ACCESS_TOKEN as string
   })
     .product.fetchAll()
     .then((products) => {
+      console.log('Fetch All Products:', products)
       return products;
     })
     .catch((err) => {
@@ -99,7 +96,6 @@ export let CATEGORIES: any = {
 };
 
 export function Collections(props: IProps) {
-  const { fetchAllProducts, products } = useContext<any>(ShopContext);
   const classes = useStyles();
   const [filterCategory, setFilterCategory] = useState<string>("");
   const [revealFilterDrawer, setRevealFilterDrawer] = useState(false);
@@ -118,7 +114,7 @@ export function Collections(props: IProps) {
       title: product.title,
       price: product.variants[0].price,
       src: product.images[0].src,
-      category: product.options[1].values[0].value,
+      category: product.productType
     };
   });
 
@@ -132,25 +128,11 @@ export function Collections(props: IProps) {
       ? bracelets
       : bracelets.filter((item) => item.category === filterCategory);
 
-  useEffect(() => {
-    fetchAllProducts();
-    Client.buildClient({
-      domain: "benson-bracelets.myshopify.com",
-      storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
-    })
-      .product.fetchAll()
-      .then((data) => {
-        console.log("Data object: ", data);
-      });
+  useEffect(() => {      
     Aos.init({
       duration: 900,
     }); /*This is for a css effect when element appears, fades into dom */
-  }, [fetchAllProducts]);
-
-  const scrollEvent = (event: SyntheticEvent) => {
-    const target = event.target as HTMLTextAreaElement;
-    // console.log("Current Scroll Position: ", target.scrollTop);
-  };
+  }, []);
 
   useScrollPosition(({ prevPos, currPos }) => {
     let revealedPosition = 0;
@@ -164,9 +146,8 @@ export function Collections(props: IProps) {
 
   return (
     <>
-      {/* {console.log('Products in collections.tsx: ', products)}
-    {console.log('GetStaticProps - Props.products in collections.tsx: ', props.products)} */}
-      <div onScroll={scrollEvent}>
+    {console.log('GetStaticProps - Props.products in collections.tsx: ', props.products)}
+      <div>
         <motion.div
           style={props.pageStyle}
           initial={props.motions.initial}

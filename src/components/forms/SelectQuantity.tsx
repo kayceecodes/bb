@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { ShopContext } from '../context/ShopContext'
 
 interface Props {
     quantity: number,
@@ -52,6 +51,10 @@ export default function SelectQuantity(props: Props) {
           <option value={4 as number}>4</option>
           <option value={5 as number}>5</option>
           <option value={6 as number}>6</option>
+          <option value={7 as number}>7</option>
+          <option value={8 as number}>8</option>
+          <option value={9 as number}>9</option>
+          <option value={10 as number}>10</option>
         </Select>
       </FormControl>
     </div>

@@ -8,7 +8,7 @@ import Collections from "../../pages/collections"
 import { dataBracelets } from "../../src/data/data"
 import { screen } from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
-import ShopProvider, { ShopConsumer, ShopContext } from '../components/context/ShopContext'
+import ShopProvider, { ShopConsumer, ShopContext } from '../context/ShopContext'
 
 type CollectionsProps = React.ComponentProps<typeof Collections>
 

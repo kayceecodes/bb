@@ -1,5 +1,5 @@
 
-export const calcTotal = (lineItems: any) => {
+export const calcTotalCost = (lineItems: any) => {
   let cartTotal = 0
 
   lineItems?.forEach((item: any) => 
@@ -13,5 +13,5 @@ export const countTotalItems = (lineItems: any) => {
 
   lineItems?.forEach((item: any) => totalItems = item.quantity + totalItems)
 
-  return totalItems > 0 ? totalItems : 'Empty';
+  return totalItems > 0 ? totalItems : 'Empty Cart';
 };  

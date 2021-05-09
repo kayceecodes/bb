@@ -12,7 +12,7 @@ import ScrollToTop from "../src/ui/scrolltotop/ScrollToTop";
 // import { bracelets } from "../src/data/data";
 import { easeInOutCubic } from "../src/utils/Easing";
 import jump from "jump.js";
-import ShopContext from '../src/components/context/ShopContext'
+import ShopContext from '../src/context/ShopContext'
 
 import { wrapper } from '../src/store/store'
 
@@ -27,7 +27,7 @@ export const parsePrice = (price: number) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [value, setValue] = useState(0);
   const router = useRouter()
-
+ 
   const setJump = (
     jumpingTarget: string | number | Element // Jump based on where the jump() is called from
   ) =>

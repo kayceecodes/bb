@@ -4,11 +4,10 @@ import Client from "shopify-buy";
 // Initializing a client to return content in the store's primary language
 const client = Client.buildClient({
   domain: "benson-bracelets.myshopify.com",
-  // storefrontAccessToken: "69542136315009d67e27c9e7ffed55f2",
-  storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+  storefrontAccessToken: process.env.SHOPIFY_ACCESS_TOKEN as string,
 });
 
-const ShopContext = React.createContext({}); // ??? default Values Need to be figured out
+const ShopContext = React.createContext({});
 
 interface State {
   product: {};
@@ -36,7 +35,6 @@ export class ShopProvider extends Component {
       this.createCheckout();
     }
   }
-
   /**
    *  Local storage will hold the  checkoutid.
    *  Shopify will handle the check eachtime a checkout is started.
@@ -47,7 +45,6 @@ export class ShopProvider extends Component {
     localStorage.setItem("checkout_id", checkout.id as any); // ??? Potentail Type Error in checkout object
     this.setState({ checkout: checkout });
   };
-
   /**
    * Fetch stored checkout from localStorage
    * @memberOf ShopProvider
@@ -62,7 +59,6 @@ export class ShopProvider extends Component {
         console.log("Error Message, in ShopContext fetchCheckout: ", err);
       });
   };
-
   /**
    * @param variantId
    * @param quantity
@@ -103,6 +99,7 @@ export class ShopProvider extends Component {
         .updateLineItems(checkoutId, lineItemsToUpdate)
         .then((checkout) => {
           console.log(checkout.lineItems); // Quantity of line item 'Z2lkOi8vc2h...' updated to 2
+          this.setState({checkout: checkout})
         });
     } else {
       console.log('Error in update Quantity')
@@ -121,6 +118,16 @@ export class ShopProvider extends Component {
     const product = await client.product.fetchByHandle(handle);
     this.setState({ product: product });
   };
+
+  countItemsInCart = () => {
+    let total = 0
+
+    this.state.checkout.lineItems?.forEach((item: any) => {
+      total = item.quantity + total
+    })
+
+    return total;
+  }
 
   setHandle = async (productHandle: string) => {
     this.setState({ productHandle });
@@ -149,10 +156,12 @@ export class ShopProvider extends Component {
           ...this.state,
           fetchAllProducts: this.fetchAllProducts,
           fetchProductWithHandle: this.fetchProductWithHandle,
+          fetchCheckout: this.fetchCheckout,
           setHandle: this.setHandle,
           addItemToCheckout: this.addItemToCheckout,
           removeLineItem: this.removeLineItem,
           updateQuantity: this.updateQuantity,
+          countItemsInCart: this.countItemsInCart,
           closeCart: this.closeCart,
           openCart: this.openCart,
           closeMenu: this.closeMenu,

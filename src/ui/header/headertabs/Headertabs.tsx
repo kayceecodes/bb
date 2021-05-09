@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
 import makeStyles from "@material-ui/core/styles/makeStyles"
@@ -9,6 +9,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart"
 import Grid from "@material-ui/core/Grid/Grid"
 import { connect } from "react-redux"
 import { ICartItems } from "../../../types/interfaces"
+import { ShopContext } from '../../../context/ShopContext'
 
 interface IProps {
   value: number
@@ -106,15 +107,17 @@ const useStyles = makeStyles((theme) => ({
 function Headertabs(props: IProps) {
   const classes = useStyles()
   const handleChange = (e: any, value: number) => props.setValue(value)
+  const { countItemsInCart } = useContext<any>(ShopContext)
 
   const shoppingcartIcon = (
     <Grid container justify='center' alignContent='flex-start'>
         <ShoppingCartIcon className={classes.shoppingcart} />
         <div style={{marginLeft: '-14px', color: '#fff'}}>
-          {props.cartItems.length}
+          { countItemsInCart() }
         </div>
     </Grid>
   )
+
 
   return (
     <>

@@ -23,16 +23,18 @@ import { Dispatch } from "redux";
 import { addToCart, addQuantityToItem } from "../../src/store/actions";
 
 import CartSummaryModal from "../../src/ui/cartSummaryModal/CartSummaryModal";
-import { ShopContext } from "../../src/components/context/ShopContext";
+import { ShopContext } from "../../src/context/ShopContext";
 import ProductInput from "../../src/components/forms/ProductInput";
 import ProductHeader from "../../src/ui/productHeader/ProductHeader";
 import BtnAddToCart from "../../src/ui/btnAddToCart/BtnAddToCart";
 import { GetStaticPaths, GetStaticProps } from "next";
+import Container from "../../src/ui/hoc/Grid";
+import PageTransition from "../../src/ui/hoc/PageTransition";
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let productsData: Promise<Collection[] | ProductData[]> = Client.buildClient({
     domain: "benson-bracelets.myshopify.com",
-    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+    storefrontAccessToken: process.env.SHOPIFY_ACCESS_TOKEN as string
   })
     .product.fetchAll()
     .then((products) => {
@@ -40,8 +42,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     });
 
   return {
-    paths: (await productsData).map((productData: any) => ({
-      params: { slug: productData.handle },
+    paths: (await productsData).map((product: any) => ({
+      params: { slug: product.handle },
     })),
     fallback: false,
   };
@@ -53,7 +55,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   let product = await Client.buildClient({
     domain: "benson-bracelets.myshopify.com",
-    storefrontAccessToken: "758288766eaaa7b97312e1cc75662bd2",
+    storefrontAccessToken: process.env.SHOPIFY_ACCESS_TOKEN as string
   })
   .product.fetchByHandle(params?.slug as string)
   .then((res) => res)
@@ -81,7 +83,7 @@ interface IGlobalState {
 // type aProps = IDisplayItemProps & IBraceletData & IGlobalState;
 
 interface Props extends IDisplayItemProps, IBraceletData, IGlobalState {
-  product: ProductData
+  product: ProductData & {productType: string}
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -125,6 +127,7 @@ function Product(props: Props) {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement>();
   const [loading, setLoading] = React.useState(false);
+  const [variantId, setVariantId] = useState('')
   const [values, setValues] = React.useState<ICartItems>({
     name: "Not Yet Updated",
     size: 0,
@@ -145,7 +148,7 @@ function Product(props: Props) {
   const onAddToCart = (newItem: ICartItems) => {
     const item = {
       ...newItem,
-      id: props.product.id,
+      id: variantId,
       name: props.product.title,
       price: props.product.variants[0].price,
       src: props.product.images[0].src,
@@ -161,6 +164,9 @@ function Product(props: Props) {
       : dispatch(addToCart(item));
   };
 
+React.useEffect(() => {
+console.log('VariantId chosen in ProductInput: ', variantId)
+}, [variantId])
   /* Clears values in the options */
   const clearValues = () =>
     setValues({
@@ -188,19 +194,7 @@ function Product(props: Props) {
   return (
     <div>
       <div style={{ position: "relative" }}>
-        <motion.div
-          style={{
-            position: "absolute",
-            width: "100%",
-            textAlign: "center",
-            overflow: "hidden",
-          }} // Style of the page as a container
-          initial={props.motions.initial}
-          animate={props.motions.animate}
-          exit={props.motions.exit}
-          variants={props.pageAnimations.variants} //pageAnimations obj broken up to 2 nested objs, variant & transitions
-          transition={props.pageAnimations.transition}
-        >
+          <PageTransition pageStyle={props.pageStyle} pageAnimations={props.pageAnimations}>
           <CartSummaryModal
             title={props.product.title}
             image={props.product.images[0].src}
@@ -232,61 +226,47 @@ function Product(props: Props) {
                   {/* Img Of Item - Bracelet */}
                 </Grid>
                 <Grid item sm={4}>
-                  {/* RIGHT SIDE OF ITEM - Details/Options */}
-                  <Grid
-                    container
+                  {/* RIGHT SIDE OF ITEM - Details/Options */}              
+                  <Container
                     alignItems="flex-end"
                     justify="space-around"
-                    direction="column"
-                  >
+                    direction="column">
                     {/* SIZE - CHOOSE SIZE*/}
-                    <Grid item>
                       <ProductInput
                         values={values}
                         handleChange={handleChange}
                         inputType="size"
+                        product={props.product}
+                        setVariantId={setVariantId}
                       />
-                    </Grid>
-                    <Grid item>
                       <ProductInput
                         values={values}
                         handleChange={handleChange}
                         inputType="quantity"
+                        product={props.product}
+                        setVariantId={setVariantId}
                       />
-                    </Grid>                  
-                    {/* SHOPPING CART - BTN - ADD TO CART FUNCTION
-                      ADDS CART ITEMS TO REDUCER
-                  */}
-
-                    <Grid item>
                       <BtnAddToCart
                         addItemToCheckout={addItemToCheckout}
+                        variantId={variantId}
                         onAddToCart={onAddToCart}
                         setLoading={setLoading}
                         loading={loading}
                         loadCartSummary={loadCartSummary}
-                        productData={props.product}
+                        product={props.product}
                         values={values}
                       />
-                    </Grid>
                     {/* PRICE - CALCULATED */}
-                    <Grid item style={{ paddingTop: "10px" }}>
-                      <Typography variant="body1">
+                      <Typography variant="body1" style={{ paddingTop: "10px" }}>
                         Price:{" "}
                         <span data-testid="price">
-                          {/* {productData.variants[0].price} */}
                           {props.product.variants[0].price}
                         </span>
                       </Typography>
-                    </Grid>
                     <div className={classes.sectionMargin} />
-                    <Grid item>
                       <Typography variant="h5">
-                        {props.product.options[1].values[0].value}
+                        {props.product.productType}
                       </Typography>
-                    </Grid>
-                    <Grid container justify="flex-end">
-                      <Grid item xs={12}>
                         <Typography
                           className={classes.itemDescription}
                           variant="body1"
@@ -295,14 +275,12 @@ function Product(props: Props) {
                           elit. Voluptatibus ullam, ipsum deleniti asperiores
                           dignissimos harum? Totam, provident sed.
                         </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
+                      </Container>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </motion.div>
+          </PageTransition>
       </div>
     </div>
   );

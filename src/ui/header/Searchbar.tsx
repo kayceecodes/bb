@@ -6,7 +6,7 @@ import Hidden from '@material-ui/core/Hidden/Hidden';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
 import Autocomplete from '@material-ui/lab/Autocomplete/Autocomplete';
 import TextField from '@material-ui/core/TextField/TextField';
-import { ShopContext } from '../../components/context/ShopContext';
+import { ShopContext } from '../../context/ShopContext';
 import { Product } from 'shopify-buy';
 
 interface Props {

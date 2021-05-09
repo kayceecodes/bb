@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -12,11 +12,13 @@ import Link from "../src/Link";
 
 import PageTransition from "../src/ui/hoc/PageTransition";
 import Grid from "../src/ui/hoc/Grid";
-import { calcTotal, countTotalItems } from "../src/utils/Math";
+import { calcTotalCost, countTotalItems } from "../src/utils/Math";
 import { CSSProperties } from "@material-ui/styles";
 import TitleHeader from "../src/ui/titleHeader/TitleHeader";
 
-import { ShopContext } from "../src/components/context/ShopContext";
+import Client from "shopify-buy";
+import { ShopContext } from "../src/context/ShopContext";
+import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 interface IProps {
   pageStyle: CSSProperties;
@@ -25,7 +27,11 @@ interface IProps {
   cartItems: ICartItems[];
   cartTotal: number;
 }
+
 const useStyles = makeStyles((theme) => ({
+  circularProgressWrapper: {
+    margin: '80px auto 0px'
+  },
   header: {
     padding: "0px 30px 5px",
     width: "100px",
@@ -83,13 +89,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /* Container with hidden overflow for items in cart */
+/* Container with hidden overflow for items in cart */
 const ItemsList = (props: any) => {
   const classes = useStyles();
   
   return (
     <div className={classes.itemsList}>
       {props.lineItems?.length > 0 ? (
-        props.lineItems.map((item: any, index: number) => (
+        props.lineItems.map((item: any, index: number, lineItems: any) => (
           <Item
             key={item.title + item.size + index}
             countTotalItems={props.countTotalItems}
@@ -111,13 +118,13 @@ const Stats = (props: any) => {
 
   return (
     <div className={classes.totalItems}>
-      {"Cart Total: $" + calcTotal(props.lineItems)}
+      {"Cart Total: $" + calcTotalCost(props.lineItems)}
       <br />
-      {"Total Items in Cart: " + countTotalItems(props.lineItems) + " items"}
+      {"Total Items in Cart: " + countTotalItems(props.lineItems)}
     </div>
   );
 };
-
+ 
 function Shoppingcart (props: IProps): React.ReactElement {
   const { checkout } = useContext<any>(ShopContext);
   const classes = useStyles();
@@ -137,7 +144,7 @@ function Shoppingcart (props: IProps): React.ReactElement {
              />
             <ItemsList
               lineItems={checkout.lineItems}
-              countTotalItems={countTotalItems}
+              countTotalItems={countTotalItems}              
             />
             <Button
               disabled={checkout.lineItems === 0}

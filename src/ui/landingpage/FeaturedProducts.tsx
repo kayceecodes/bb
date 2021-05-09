@@ -6,12 +6,11 @@ import Typography from "@material-ui/core/Typography";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import Button from "@material-ui/core/Button/Button";
-import { ShopContext } from "../../components/context/ShopContext";
+import { ShopContext } from "../../context/ShopContext";
 import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
 import useTheme from "@material-ui/core/styles/useTheme";
 import router from "next/router";
 import Container from "../hoc/Grid";
-import RoundWideUnderline from "../underline/RoundWideUnderline";
 import { CircularProgress } from "@material-ui/core";
 import TitleHeader from "../titleHeader/TitleHeader";
 
