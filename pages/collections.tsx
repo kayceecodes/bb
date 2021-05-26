@@ -134,7 +134,7 @@ export function Collections(props: IProps) {
     }); /*This is for a css effect when element appears, fades into dom */
   }, []);
 
-  useScrollPosition(({ prevPos, currPos }) => {
+  useScrollPosition(({ prevPos: {}, currPos }) => {
     let revealedPosition = 0;
     revealedPosition = matches.md ? 750 : 0;
     if (-currPos.y >= revealedPosition) {

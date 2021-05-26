@@ -1,5 +1,4 @@
-import React, { CSSProperties, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React, { CSSProperties, useContext, useState } from "react";
 
 import {
   IBraceletData,
@@ -15,8 +14,6 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
-
-import { motion } from "framer-motion";
 
 import { connect, useDispatch } from "react-redux";
 import { Dispatch } from "redux";
