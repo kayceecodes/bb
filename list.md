@@ -54,9 +54,10 @@
         - Every time an Option value in a CSV is change the Variant id is change. A new one is created and replaces the old
     6. Why forEach over for in vice versa
     7. Why doesnt process.env.SHOPIF_ACCESS_TOKEN work but it does on other pages
-    8. Collections Page has a Warning, "Can't perform a React state update on an  unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function."
+    8. Collections Page has a Warning, "Can't perform a React state update on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks in a useEffect cleanup function."
     9. Advatages of using .env.local? Should api tokens be used with .env.local
     10. Are .env.development files great with hidding secret keys?
+    11. Why is github not updated after deploying project with vercel.
 # Plan out Shopping Cart & Shopify Cart
     Add To Cart in Product's Page
     X Add a variant-id to addToCart()
