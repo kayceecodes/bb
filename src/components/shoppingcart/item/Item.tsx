@@ -1,6 +1,5 @@
-import React, { Dispatch, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ICartItems } from "../../../types/interfaces";
-import { useDispatch } from "react-redux";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import Grid from "@material-ui/core/Grid/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -8,10 +7,6 @@ import Typography from "@material-ui/core/Typography/Typography";
 import Button from "@material-ui/core/Button/Button";
 import Icon from "@material-ui/core/Icon/Icon"; /*Works with a CDN fount at Material-UI.com*/
 import Aos from "aos";
-import {
-  clearIDFromCart,
-  removeAllQuantityFromItem,
-} from "../../../store/actions";
 import { fixedTitleLength } from "../../../utils/Parse";
 import { ShopContext } from "../../../context/ShopContext";
 import SelectQuantity from "../../forms/SelectQuantity";
@@ -102,18 +97,11 @@ export default function Item(props: Props) {
   const classes = useStyles();
   const [mounted, setMounted] = useState(true);
   const [loading, setLoading] = useState(false);
-  const dispatch: Dispatch<any> = useDispatch();
   const [quantity, setQuantity] = React.useState<number>(0);
   const [showSelect, setShowSelect] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<any>) => {
     setQuantity(event.target.value as number);
-  };
-
-  const clearCard = () => {
-    dispatch(removeAllQuantityFromItem({ ...props }));
-    dispatch(clearIDFromCart({ ...props }));
-    props.countTotalItems();
   };
 
   useEffect(() => {

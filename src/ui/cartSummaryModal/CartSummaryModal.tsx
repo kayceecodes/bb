@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
-import Link from "../../Link";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
-
 import Button from "@material-ui/core/Button/Button";
 import Grid from "@material-ui/core/Grid/Grid";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -10,9 +8,6 @@ import Typography from "@material-ui/core/Typography/Typography";
 import Popover from "@material-ui/core/Popover/Popover";
 import useMediaQuery from "@material-ui/core/useMediaQuery/useMediaQuery";
 import theme from "../Theme";
-
-import { ICartItems } from "../../types/interfaces";
-
 import Aos from "aos";
 import "aos/dist/aos.css";
 import Backdrop from "@material-ui/core/Backdrop/Backdrop";

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { connect } from "react-redux";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -16,9 +16,7 @@ import { calcTotalCost, countTotalItems } from "../src/utils/Math";
 import { CSSProperties } from "@material-ui/styles";
 import TitleHeader from "../src/ui/titleHeader/TitleHeader";
 
-import Client from "shopify-buy";
 import { ShopContext } from "../src/context/ShopContext";
-import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 interface IProps {
   pageStyle: CSSProperties;
@@ -96,7 +94,7 @@ const ItemsList = (props: any) => {
   return (
     <div className={classes.itemsList}>
       {props.lineItems?.length > 0 ? (
-        props.lineItems.map((item: any, index: number, lineItems: any) => (
+        props.lineItems.map((item: any, index: number) => (
           <Item
             key={item.title + item.size + index}
             countTotalItems={props.countTotalItems}

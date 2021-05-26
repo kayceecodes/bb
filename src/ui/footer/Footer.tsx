@@ -130,16 +130,17 @@ export default function Footer(props: IProps) {
         <Grid item xs={12} sm={6}>
           {/* LeftSide of Footer*/}
           <Typography className={classes.footerNavigation} component="ul">
-            <li>
+            {/* <li>
               <Button className={classes.footerNavBtn} component={Link} href="/">
                 Home
               </Button>
-            </li>
+            </li> */}
             <li>
               <Button
                 className={classes.footerNavBtn}
                 component={Link}
                 href="/contact"
+                onClick={() => props.setValue(2)}
               >
                 Contact Us
               </Button>
@@ -149,7 +150,8 @@ export default function Footer(props: IProps) {
                 className={classes.footerNavBtn}
                 component={Link}
                 href="/collections"
-              >
+                onClick={() => props.setValue(1)}
+>
                 Collections
               </Button>
             </li>
